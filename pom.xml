@@ -4,12 +4,12 @@
 	<groupId>com.excilys.computerDatabase</groupId>
 	<artifactId>computerDatabase</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
 	<packaging>war</packaging>
+
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<driver.jdbc>5.1.18</driver.jdbc>
+		<driver.jdbc>6.0.6</driver.jdbc>
 		<org.slf4j>1.7.25</org.slf4j>
 		<org.log4j.version>1.2.17</org.log4j.version>
 		<junit.version>4.12</junit.version>
@@ -63,13 +63,32 @@
 		<!-- <version>6.0.53</version> -->
 		<!-- </dependency> -->
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>javax.servlet</groupId> -->
+<!-- 			<artifactId>servlet-api</artifactId> -->
+<!-- 			<version>3.1.0</version> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <scope>provided</scope>
+</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 	</dependencies>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.0</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>

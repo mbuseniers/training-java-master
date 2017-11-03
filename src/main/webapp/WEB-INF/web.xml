@@ -4,13 +4,23 @@
 	version="3.0">
 
 	<servlet>
-		<servlet-name>IndexServlet</servlet-name>
-		<servlet-class>servlets.IndexServlet</servlet-class>
+		<servlet-name>DashboardServlet</servlet-name>
+		<servlet-class>servlets.DashboardServlet</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>
-		<servlet-name>IndexServlet</servlet-name>
+		<servlet-name>DashboardServlet</servlet-name>
 		<url-pattern>/dashboard</url-pattern>
+	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>AddComputerServlet</servlet-name>
+		<servlet-class>servlets.AddComputerServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>AddComputerServlet</servlet-name>
+		<url-pattern>/addcomputer</url-pattern>
 	</servlet-mapping>
 
 </web-app>

@@ -11,13 +11,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.Statement;
-
-import interfaceProjet.Main;
 import jdbc.ConnectionMySQL;
 import mappers.ComputerMapper;
 import model.Computer;
-import utils.Page;
 
 public class DAOComputer {
 	
@@ -27,6 +23,8 @@ public class DAOComputer {
 
 	
 	private String sqlGetComputers = "SELECT * FROM computer";
+	private String sqlGetComputersLimitOffset = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private String sqlGetNumberComputers = "SELECT COUNT(*) FROM computer";
 	private String sqlInsertComputer = "INSERT INTO computer"
 			+ "(name, introduced, discontinued, company_id) VALUES"
 			+ "(?,?,?,?)";
@@ -46,11 +44,33 @@ public class DAOComputer {
 		return DA;
 	}
 	
-	
+	public int getNumberComputers()
+	{
+
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		
+		try {
+			preparedStatement = conn.prepareStatement(sqlGetNumberComputers);
+		    rs = preparedStatement.executeQuery();
+	    
+		    rs.next();
+		    int number = rs.getInt(1);
+			System.out.println(number);
+
+		    return number;
+			
+			
+		} catch (SQLException e) {
+			System.out.println("SQL exception get number computers");
+			return 0;
+		}
+		
+	}
 
 	public ArrayList<Computer> getComputers() throws SQLException 
 	{
-		
+		System.out.println("dao getcomputers");
 	    LOGGER.info("GetComputer DAO");
 
 		PreparedStatement preparedStatement = null;
@@ -73,19 +93,12 @@ public class DAOComputer {
 			    	if(rs.getDate(4) == null) date_dis = null;
 			    	else date_dis = rs.getDate(4).toLocalDate();
 
-			    	
 		    		listeComputers.add( ca.mappToComputer(rs.getInt(1),
 		    											  rs.getString(2),
 		    											  date_inc,
 		    											  date_dis,
-		    											  rs.getInt(5)) );
-					
-		    		/*int id = rs.getInt(1); 
-			    	String nom = rs.getString(2); 
-			    	Date date_inc = rs.getDate(3);
-			    	Date date_dis = rs.getDate(4);
-			    	int id_company = rs.getInt(5);
-					*/		
+		    											  rs.getInt(5),
+		    											  rs.getString(7)));	
 			}
 		    
 		    return listeComputers;
@@ -93,6 +106,8 @@ public class DAOComputer {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			System.out.println("sqlexception dao get computers");
+
 			e.printStackTrace();
 			return null;
 		}finally {
@@ -101,6 +116,58 @@ public class DAOComputer {
 		}
 		
 		    	
+	}
+	
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws SQLException 
+	{
+		System.out.println("dao getcomputers");
+	    LOGGER.info("GetComputer Limite Offset DAO");
+
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		ComputerMapper ca = ComputerMapper.getInstance();
+		
+		try {
+			preparedStatement = conn.prepareStatement(sqlGetComputersLimitOffset);
+			preparedStatement.setInt(1, limit);
+			preparedStatement.setInt(2, offset);
+
+			
+		    rs = preparedStatement.executeQuery();
+	    
+		    ArrayList<Computer> listeComputers = new ArrayList<>();
+		    
+		    while(rs.next())
+			{
+			    	LocalDate date_inc;
+			    	LocalDate date_dis;
+			    	
+			    	if(rs.getDate(3) == null) date_inc = null;
+			    	else date_inc = rs.getDate(3).toLocalDate();
+			    	if(rs.getDate(4) == null) date_dis = null;
+			    	else date_dis = rs.getDate(4).toLocalDate();
+
+		    		listeComputers.add( ca.mappToComputer(rs.getInt(1),
+		    											  rs.getString(2),
+		    											  date_inc,
+		    											  date_dis,
+		    											  rs.getInt(5), 
+		    											  rs.getString(7)) );	
+			}
+		    
+		    return listeComputers;
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("sqlexception dao get computers");
+
+			e.printStackTrace();
+			return null;
+		}finally {
+			rs.close();
+		    preparedStatement.close();
+		}
 	}
 	
 	public int addComputer(Computer computer) 
@@ -114,7 +181,7 @@ public class DAOComputer {
 			statement.setString(1, computer.getName());
 			statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
 			statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
-			statement.setInt(4, computer.getId_company());
+			statement.setInt(4, computer.getCompany().getId());
 			
 			// execute insert SQL stetement
 			return statement.executeUpdate();
@@ -140,7 +207,7 @@ public class DAOComputer {
 			statement.setString(1, computer.getName());
 			statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
 			statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
-			statement.setInt(4, computer.getId_company());
+			statement.setInt(4, computer.getCompany().getId());
 			statement.setInt(5, id);
 
 			// execute insert SQL stetement

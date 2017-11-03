@@ -1,8 +1,6 @@
 package model;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.sql.Date;
 
 public class Computer {
 
@@ -10,9 +8,8 @@ public class Computer {
 	private String name;
 	private LocalDate date_introduced;
 	private LocalDate date_discontinued;
-	
-
-	private int id_company;
+	//private int id_company;
+	private Company company;
 	
 	
 	public int getId() {
@@ -43,14 +40,21 @@ public class Computer {
 	}
 		
 	
-	public int getId_company() {
+	/*public int getId_company() {
 		return id_company;
 	}
 	public void setId_company(int id_company) {
 		this.id_company = id_company;
+	}*/
+	
+	public Company getCompany() {
+		return company;
+	}
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 	
-	public Computer(String name, LocalDate ts_inc, LocalDate ts_des, int id_company) {
+	/*public Computer(String name, LocalDate ts_inc, LocalDate ts_des, int id_company) {
 		super();
 		this.name = name;
 		this.date_introduced = ts_inc;
@@ -65,13 +69,31 @@ public class Computer {
 		this.date_introduced = ts_inc;
 		this.date_discontinued = ts_des;
 		this.id_company = id_company;
+	}*/
+	
+	public Computer(String name, LocalDate ts_inc, LocalDate ts_des,Company company) {
+		super();
+		this.name = name;
+		this.date_introduced = ts_inc;
+		this.date_discontinued = ts_des;
+		this.company = company;
+	}
+	
+	public Computer(int id, String name, LocalDate ts_inc, LocalDate ts_des, Company company) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.date_introduced = ts_inc;
+		this.date_discontinued = ts_des;
+		this.company = company;
 	}
 	
 	public String toString()
 	{
-		return "ID : " + id + " -- NOM : " + name + " -- Date Introduced : " + date_introduced + " -- Date Discontinued : " + date_discontinued + " -- ID COMPANY : " + id_company;
+		return "ID : " + id + " -- NOM : " + name + " -- Date Introduced : " + date_introduced + " -- Date Discontinued : " + date_discontinued + " -- ID COMPANY : " + company.getId();
 		
 	}
+
 	
 
 }
