@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -51,22 +50,53 @@ public class DashboardServlet extends HttpServlet {
 		
 		try {
 
-			listeComputers = dao.getComputersByLimitAndOffset(nombreComputersByPage,numeroPage);
+			listeComputers = dao.getComputersByLimitAndOffset(nombreComputersByPage,numeroPage*nombreComputersByPage);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			listeComputers = null;
-			e.printStackTrace();
 		}
-		
 
-		
-		request.setAttribute( "nombreComputers", nombreComputers );
-		
 		request.setAttribute("liste", listeComputers);
 		request.setAttribute("page", numeroPage);
 		request.setAttribute("nombreComputers", nombreComputers);
 		
 		this.getServletContext().getRequestDispatcher( "/views/dashboard.jsp" ).forward( request, response );
+	}
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+		boolean isDeleteOk = false;
+		String selection = request.getParameter("selection");
+		
+		String[] deleteSelected = selection.split(",");
+		
+		for(int i=0; i<deleteSelected.length;i++)
+		{
+			System.out.println(deleteSelected[i]);
+			isDeleteOk = dao.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
+		}
+		
+		if(isDeleteOk) {
+			request.setAttribute("messageDelete", "Supression OK");
+		}else {
+			request.setAttribute("messageDelete", "Probleme de suppression");
+		}
+		
+		int nombreComputers = dao.getNumberComputers();
+		ArrayList<Computer> listeComputers;
+		
+		try {
+
+			listeComputers = dao.getComputersByLimitAndOffset(50,0);
+		} catch (SQLException e) {
+			listeComputers = null;
+		}
+		
+		request.setAttribute("liste", listeComputers);
+		request.setAttribute("nombreComputers", nombreComputers);
+
+		
+		this.getServletContext().getRequestDispatcher( "/views/dashboard.jsp" ).forward( request, response );
+
 	}
 
 }

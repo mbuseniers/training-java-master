@@ -46,6 +46,7 @@ public class DAOComputer {
 	
 	public int getNumberComputers()
 	{
+	    LOGGER.info("GetNumberComputer DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
@@ -70,7 +71,6 @@ public class DAOComputer {
 
 	public ArrayList<Computer> getComputers() throws SQLException 
 	{
-		System.out.println("dao getcomputers");
 	    LOGGER.info("GetComputer DAO");
 
 		PreparedStatement preparedStatement = null;
@@ -120,7 +120,6 @@ public class DAOComputer {
 	
 	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws SQLException 
 	{
-		System.out.println("dao getcomputers");
 	    LOGGER.info("GetComputer Limite Offset DAO");
 
 		PreparedStatement preparedStatement = null;
@@ -179,8 +178,20 @@ public class DAOComputer {
 			PreparedStatement statement = conn.prepareStatement(sqlInsertComputer);
 
 			statement.setString(1, computer.getName());
-			statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
-			statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
+			
+			if(computer.getDate_introduced() == null) {
+				statement.setDate(2, null);
+			}else {
+				statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
+
+			}
+			
+			if(computer.getDate_discontinued() == null) {
+				statement.setDate(3, null);
+
+			}else {			
+				statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));	
+			}
 			statement.setInt(4, computer.getCompany().getId());
 			
 			// execute insert SQL stetement
@@ -205,8 +216,21 @@ public class DAOComputer {
 			PreparedStatement statement = conn.prepareStatement(sqlUpdateComputer);
 	
 			statement.setString(1, computer.getName());
-			statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
-			statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
+			
+			if(computer.getDate_introduced() == null) {
+				statement.setDate(2, null);
+			}else {
+				statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
+
+			}
+			
+			if(computer.getDate_discontinued() == null) {
+				statement.setDate(3, null);
+
+			}else {			
+				statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));	
+			}
+			
 			statement.setInt(4, computer.getCompany().getId());
 			statement.setInt(5, id);
 
@@ -221,9 +245,9 @@ public class DAOComputer {
 		}
 	}
 	
-	public int deleteComputer(int id)
+	public boolean deleteComputer(int id)
 	{
-	    LOGGER.info("DeleteComputer DAO");
+	    LOGGER.info("DeleteComputer DAO id -> " + id);
 
 		
 		try {
@@ -231,13 +255,12 @@ public class DAOComputer {
 	
 			statement.setInt(1, id);
 
-			// execute insert SQL stetement
-			return statement.executeUpdate();
+			return statement.executeUpdate()==1;
 		
 		}catch (SQLException e) {
 
 			System.out.println(e.getMessage());
-			return -1;
+			return false;
 
 		}
 		

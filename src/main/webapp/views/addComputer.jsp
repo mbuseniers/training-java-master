@@ -21,19 +21,24 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
+                    	<h2><c:out value="${messageAjout}" /></h2>
                     <form action="addcomputer" method="POST">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
+                                <c:out value="${messageErrorName}" />
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="dd-MM-yyyy">
+                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="yyyy-MM-dd">
+                                <c:out value="${messageErrorIntroduced}" />
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="dd-MM-yyyy">
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">                                <c:out value="${messageErrorName}" />
+                               <c:out value="${messageErrorDiscontinued}" />
+                                
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
@@ -43,6 +48,7 @@
 										 <option value=${company['id']}>${company['name']}</option>
 									</c:forEach>
                                 </select>
+                                <c:out value="${messageErrorCompany}" />
                             </div>                  
                         </fieldset>
                         <div class="actions pull-right">

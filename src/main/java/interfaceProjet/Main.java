@@ -77,8 +77,8 @@ public class Main {
 			case 4 : 
 				
 				CptService = ComputerService.getInstance();
-				result = CptService.deleteComputer();
-				if(result == 1 ) {
+				boolean res = CptService.deleteComputer();
+				if(res) {
 					System.out.println("Delete Ok");
 				} else {
 					System.out.println("Delete non effectué");

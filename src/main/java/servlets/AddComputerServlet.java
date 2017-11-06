@@ -1,6 +1,9 @@
 package servlets;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -13,6 +16,7 @@ import dao.DAOComputer;
 import model.Company;
 import model.Computer;
 import services.ComputerService;
+import utils.Utils;
 
 public class AddComputerServlet extends HttpServlet{
 
@@ -35,16 +39,68 @@ public class AddComputerServlet extends HttpServlet{
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
-		String message_ajout = computerService.addComputer(request.getParameter("computerName"), 
-														   request.getParameter("introduced"), 
-														   request.getParameter("discontinued"), 
-														   Integer.valueOf(request.getParameter("companyId")));
+		ArrayList<Company> listeCompanies;
+		listeCompanies = daoCompany.getCompanies();
+		request.setAttribute("listeCompanies", listeCompanies);
 		
+		boolean isNameOk = !request.getParameter("computerName").equals("");
+		boolean isIntroducedOk =false, isDiscontinuedOk = false;
 		
-		request.setAttribute("messageAjout", message_ajout);
+		int companyId = Integer.valueOf(request.getParameter("companyId"));
+		boolean isCompanyOk =  companyId > 0 && companyId <= listeCompanies.size() ;
+		
+		String introduced = request.getParameter("introduced");
+		String discontinued = request.getParameter("discontinued");	
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		if(!introduced.equals("")) {
+			try {
+				LocalDate.parse(introduced, formatter);
+				isIntroducedOk = true;
+			} catch (DateTimeParseException e) {
+				request.setAttribute("messageErrorIntroduced", "Syntaxe incorrecte");
+			}
+		}else {
+			isIntroducedOk = true;
+		}
+
+		if(!discontinued.equals("")) {
+			try {
+				LocalDate.parse(discontinued, formatter);
+				isDiscontinuedOk = true;
+			} catch (DateTimeParseException e) {
+				request.setAttribute("messageErrorDiscontinued", "Syntaxe incorrecte");
+
+			}
+		}else {
+			isDiscontinuedOk = true;
+		}
+		
+		if(!isNameOk) {
+			request.setAttribute("messageErrorName", "le Nom ne peut etre vide" );
+		}
+		
+		if(!isCompanyOk) {
+			request.setAttribute("messageErrorCompany", "La company n'a pas été trouvée");
+		}
+		
+		if(isNameOk && isIntroducedOk && isDiscontinuedOk && isCompanyOk) {
+			boolean isAddOk = computerService.addComputer(request.getParameter("computerName"), 
+					   request.getParameter("introduced"), 
+					   request.getParameter("discontinued"), 
+					   companyId);
+			if(isAddOk) {
+			request.setAttribute("messageAjout", "Ajout OK");
+			
+			}else {
+			request.setAttribute("messageAjout", "Problème lors de l'ajout");
+			}
+		}
+		
 
 
-		this.getServletContext().getRequestDispatcher( "/views/addComputerResponse.jsp" ).forward( request, response );
+		
+		this.getServletContext().getRequestDispatcher( "/views/addComputer.jsp" ).forward( request, response );
 
 	}
 
