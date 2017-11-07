@@ -7,6 +7,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dao.DAOComputer;
 import model.Company;
 import model.Computer;
@@ -15,8 +18,10 @@ import utils.Utils;
 public class ComputerService {
 
 	private static ComputerService cs;
-	DAOComputer da;
+	private DAOComputer da;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputer.class);
 
+	
 	private ComputerService() {
 		da = DAOComputer.getInstance();
 	}
@@ -35,64 +40,82 @@ public class ComputerService {
 		LocalDate date_introduced;
 		LocalDate date_discontinued;
 
-		if(!introduced.equals("")) {
+		if (!introduced.equals("")) {
 			try {
 				date_introduced = LocalDate.parse(introduced, formatter);
 			} catch (DateTimeParseException e) {
 				date_introduced = null;
 			}
-		}else {
+		} else {
 			date_introduced = null;
 		}
 
-		if(!discontinued.equals("")) {
+		if (!discontinued.equals("")) {
 			try {
 				date_discontinued = LocalDate.parse(discontinued, formatter);
 			} catch (DateTimeParseException e) {
 				date_discontinued = null;
 
 			}
-		}else {
+		} else {
 			date_discontinued = null;
 		}
 
 		return da.addComputer(new Computer(name, date_introduced, date_discontinued, new Company(company_id))) == 1;
 
-
 	}
-	
-	//editcomputer JEE
-	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
 
+	// editcomputer JEE
+	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate date_introduced;
 		LocalDate date_discontinued;
 
-		if(!introduced.equals("")) {
+		if (!introduced.equals("")) {
 			try {
 				date_introduced = LocalDate.parse(introduced, formatter);
 			} catch (DateTimeParseException e) {
 				date_introduced = null;
 			}
-		}else {
+		} else {
 			date_introduced = null;
 		}
 
-		if(!discontinued.equals("")) {
+		if (!discontinued.equals("")) {
 			try {
 				date_discontinued = LocalDate.parse(discontinued, formatter);
 			} catch (DateTimeParseException e) {
 				date_discontinued = null;
 
 			}
-		}else {
+		} else {
 			date_discontinued = null;
 		}
 
+		return da.updateComputer(id,
+				new Computer(name, date_introduced, date_discontinued, new Company(company_id))) == 1;
 
-		return da.updateComputer(id,new Computer(name, date_introduced, date_discontinued, new Company(company_id))) == 1;
+	}
+
+	public int getNumberComputers() {
+		return da.getNumberComputers();
+	}
+
+	public boolean deleteComputer(String selection) {
+		String[] deleteSelected = selection.split(",");
+		boolean isDeleteOk = true;
+
+		for (int i = 0; i < deleteSelected.length; i++) {
+			isDeleteOk = da.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
+		    LOGGER.info("isdeleteok -> " + isDeleteOk);
+		}
+		return isDeleteOk;
+	}
 	
+
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws SQLException {
+		return da.getComputersByLimitAndOffset(limit, offset);
 	}
 
 	public ArrayList<Computer> getComputers() throws SQLException {
@@ -198,5 +221,6 @@ public class ComputerService {
 		return da.updateComputer(id, new Computer(nom, ts_inc, ts_des, new Company(id_company)));
 
 	}
+
 
 }

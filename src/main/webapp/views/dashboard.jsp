@@ -27,7 +27,9 @@
 				<c:out value="${nombreComputers}" />
 				Computers found
 			</h1>
-			<h2><c:out value="${messageDelete}" /></h2>
+			<h2>
+				<c:out value="${messageDelete}" />
+			</h2>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -37,7 +39,7 @@
 							type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
 					</form>
-				</div> 
+				</div>
 				<div class="pull-right">
 					<a class="btn btn-success" id="addComputer" href="addcomputer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
@@ -99,27 +101,64 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="?page=<c:out value="${page-1}" /> "
+				<li><a href="?changePage=1&page=<c:out value="${page-1}"/>&size=<c:out value="${size}"/> "
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
-				<li><a href="?page=<c:out value="${page+1}" /> "
+				
+				<c:forEach begin="${intervalMin}" end="${intervalMax}" var="i">
+								<li>
+									<a ${i == page ? 'style="font-weight: bold;"' : ''} href="?changePage=1&page=<c:out value="${i}"/>&size=<c:out value="${size}"/> "  >
+										<c:out value="${i+1}"/>
+									</a>
+								</li>
+				</c:forEach>
+	         
+				<li><a href="?changePage=1&page=<c:out value="${page+1}"/>&size=<c:out value="${size}"/>"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
-			<!--   <div class="btn-group btn-group-sm pull-right" role="group" >
-            <a href="dashboard?size=10" type="button">
-              <button type="button" class="btn btn-default">10</button>
-            </a>
-            <a href="dashboard?size=50" type="button">
-               <button type="button" class="btn btn-default">50</button>
-            </a>
-            <a href="dashboard?size=100" type="button">
-               <button type="button" class="btn btn-default">100</button>
-            </a>
-            -->
-		</div>
+			<div class="btn-group btn-group-sm pull-right" role="group">
+				
+				<c:if test="${size == 10}">
+					<a href="dashboard?changeSize=1&size=10" type="button">
+						<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">10</button>
+					</a> 
+				</c:if>
+				<c:if test="${size != 10}">
+					<a href="dashboard?changeSize=1&size=10" type="button">
+						<button type="button" class="btn btn-default">10</button>
+					</a> 
+				</c:if>
+				
+				<c:if test="${size == 50}">
+					<a  href="dashboard?changeSize=1&size=50" type="button">
+						<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">50</button>
+					</a> 
+				</c:if>
+				
+				<c:if test="${size != 50}">
+					<a  href="dashboard?changeSize=1&size=50" type="button">
+					<button  type="button" class="btn btn-default">50</button>
+					</a> 
+				</c:if>
+				
+				
+				<c:if test="${size == 100}">
+					<a href="dashboard?changeSize&size=100" type="button">
+					<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">100</button>
+					</a>
+				</c:if>
+				
+				<c:if test="${size != 100}">
+					<a href="dashboard?changeSize&size=100" type="button">
+					<button type="button" class="btn btn-default">100</button>
+					</a>
+				</c:if>
+				
+				
 
+			</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

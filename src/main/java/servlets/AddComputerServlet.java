@@ -11,27 +11,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.DAOCompany;
-import dao.DAOComputer;
 import model.Company;
-import model.Computer;
+import services.CompanyService;
 import services.ComputerService;
-import utils.Utils;
+import services.ValidatorService;
 
 public class AddComputerServlet extends HttpServlet{
 
-	private DAOComputer dao =  DAOComputer.getInstance();
-	private DAOCompany daoCompany = DAOCompany.getInstance();
+	private CompanyService companyService = CompanyService.getInstance();
 	private ComputerService computerService = ComputerService.getInstance();
-
+	private ValidatorService validatorService = ValidatorService.getInstance();
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("do GET add computer");
 		
 		ArrayList<Company> listeCompanies;
 		
-		listeCompanies = daoCompany.getCompanies();
+		listeCompanies = companyService.getCompanies();
 		request.setAttribute("listeCompanies", listeCompanies);
-
 		
 		this.getServletContext().getRequestDispatcher( "/views/addComputer.jsp" ).forward( request, response );
 
@@ -40,41 +36,14 @@ public class AddComputerServlet extends HttpServlet{
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
 		ArrayList<Company> listeCompanies;
-		listeCompanies = daoCompany.getCompanies();
+		listeCompanies = companyService.getCompanies();
 		request.setAttribute("listeCompanies", listeCompanies);
 		
-		boolean isNameOk = !request.getParameter("computerName").equals("");
-		boolean isIntroducedOk =false, isDiscontinuedOk = false;
+		boolean isNameOk = validatorService.checkName(request.getParameter("computerName"));
+		boolean isIntroducedOk =validatorService.checkDateFromString(request.getParameter("introduced"));
+		boolean isDiscontinuedOk = validatorService.checkDateFromString(request.getParameter("discontinued"));
+		boolean isCompanyOk = validatorService.checkCompany( Integer.valueOf(request.getParameter("companyId")),listeCompanies.size() );
 		
-		int companyId = Integer.valueOf(request.getParameter("companyId"));
-		boolean isCompanyOk =  companyId > 0 && companyId <= listeCompanies.size() ;
-		
-		String introduced = request.getParameter("introduced");
-		String discontinued = request.getParameter("discontinued");	
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-		if(!introduced.equals("")) {
-			try {
-				LocalDate.parse(introduced, formatter);
-				isIntroducedOk = true;
-			} catch (DateTimeParseException e) {
-				request.setAttribute("messageErrorIntroduced", "Syntaxe incorrecte");
-			}
-		}else {
-			isIntroducedOk = true;
-		}
-
-		if(!discontinued.equals("")) {
-			try {
-				LocalDate.parse(discontinued, formatter);
-				isDiscontinuedOk = true;
-			} catch (DateTimeParseException e) {
-				request.setAttribute("messageErrorDiscontinued", "Syntaxe incorrecte");
-
-			}
-		}else {
-			isDiscontinuedOk = true;
-		}
 		
 		if(!isNameOk) {
 			request.setAttribute("messageErrorName", "le Nom ne peut etre vide" );
@@ -84,11 +53,20 @@ public class AddComputerServlet extends HttpServlet{
 			request.setAttribute("messageErrorCompany", "La company n'a pas été trouvée");
 		}
 		
+		
+		if(!isIntroducedOk) {
+			request.setAttribute("messageErrorIntroduced", "Erreur de syntax" );
+		}
+		
+		if(!isDiscontinuedOk) {
+			request.setAttribute("messageErrorIntroduced", "Erreur de syntax" );
+		}
+		
 		if(isNameOk && isIntroducedOk && isDiscontinuedOk && isCompanyOk) {
 			boolean isAddOk = computerService.addComputer(request.getParameter("computerName"), 
 					   request.getParameter("introduced"), 
 					   request.getParameter("discontinued"), 
-					   companyId);
+					   Integer.valueOf(request.getParameter("companyId")));
 			if(isAddOk) {
 			request.setAttribute("messageAjout", "Ajout OK");
 			
@@ -96,10 +74,7 @@ public class AddComputerServlet extends HttpServlet{
 			request.setAttribute("messageAjout", "Problème lors de l'ajout");
 			}
 		}
-		
 
-
-		
 		this.getServletContext().getRequestDispatcher( "/views/addComputer.jsp" ).forward( request, response );
 
 	}

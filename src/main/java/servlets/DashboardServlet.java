@@ -11,92 +11,141 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOComputer;
 import model.Computer;
-
-
-
-
-
-
+import services.ComputerService;
+import services.ValidatorService;
 
 public class DashboardServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private ComputerService computerService = ComputerService.getInstance();
+	private ValidatorService validatorService = ValidatorService.getInstance();
+
 	
-	private DAOComputer dao =  DAOComputer.getInstance();
-	
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("text/html");
+
+		doPagination(request, response);
 		
-		int numeroPage;
-		int nombreComputers = dao.getNumberComputers();
-		int nombreComputersByPage = 50;
+		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+	}
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		boolean isDeleteOk = computerService.deleteComputer(request.getParameter("selection"));
+		int page=0, size=50, intervalMin=0, intervalMax=4;
 		
-		if(request.getParameter("page") != null) {
-			numeroPage = Integer.valueOf(request.getParameter( "page"));
-			if(numeroPage < 0 ) {
-				numeroPage=0;
-			}
-			
-			if(numeroPage > (nombreComputers/nombreComputersByPage)+1) {
-				numeroPage = nombreComputers/nombreComputersByPage;
-			}
-		}else {
-			numeroPage = 0;
+		if (isDeleteOk) {
+			request.setAttribute("messageDelete", "Supression OK");
+		} else {
+			request.setAttribute("messageDelete", "Probleme de suppression");
 		}
-		
-		
+
+		int nombreComputers = computerService.getNumberComputers();
 		ArrayList<Computer> listeComputers;
-		
+
 		try {
 
-			listeComputers = dao.getComputersByLimitAndOffset(nombreComputersByPage,numeroPage*nombreComputersByPage);
+			listeComputers = computerService.getComputersByLimitAndOffset(size, page);
+		} catch (SQLException e) {
+			listeComputers = null;
+		}
+
+		request.setAttribute("liste", listeComputers);
+		request.setAttribute("page", page);
+		request.setAttribute("size", size);
+		request.setAttribute("intervalMin", intervalMin);
+		request.setAttribute("intervalMax", intervalMax);
+		request.setAttribute("nombreComputers", nombreComputers);
+
+		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+
+	}
+
+	public void doPagination(HttpServletRequest request, HttpServletResponse response) {
+		int numeroPage = 0, nombreComputersByPage = 0, intervalPageMin = 0, intervalPageMax = 2, nombrePageMax = 0;
+		int nombreComputers = computerService.getNumberComputers();
+
+		if (request.getParameter("changeSize") == null && request.getParameter("changePage") == null) {
+			numeroPage = 0;
+			nombreComputersByPage = 50;
+
+			nombrePageMax = nombreComputers / nombreComputersByPage;
+			if (nombreComputers % nombreComputersByPage > 0) {
+				nombrePageMax++;
+			}
+
+			if (nombrePageMax < intervalPageMax) {
+				intervalPageMax = nombrePageMax;
+			}
+			intervalPageMin = 0;
+		} else if (request.getParameter("changeSize") != null) {
+			nombreComputersByPage = Integer.valueOf(request.getParameter("size"));
+			numeroPage = 0;
+
+			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
+				nombreComputersByPage = 50;
+			}
+
+			nombrePageMax = nombreComputers / nombreComputersByPage;
+			if (nombreComputers % nombreComputersByPage > 0) {
+				nombrePageMax++;
+			}
+
+			intervalPageMin = 0;
+			if (nombrePageMax < intervalPageMax) {
+				intervalPageMax = nombrePageMax;
+			}
+
+		} else if (request.getParameter("changePage") != null) {
+			numeroPage = Integer.valueOf(request.getParameter("page"));
+			nombreComputersByPage = Integer.valueOf(request.getParameter("size"));
+
+			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
+				nombreComputersByPage = 50;
+			}
+
+			nombrePageMax = nombreComputers / nombreComputersByPage;
+			if (nombreComputers % nombreComputersByPage > 0) {
+				nombrePageMax++;
+			}
+
+			if (numeroPage < 0) {
+				numeroPage = 0;
+			} else if (numeroPage >= nombrePageMax) {
+				numeroPage = nombrePageMax - 1;
+			}
+
+			if (numeroPage == 0 || numeroPage == 1) {
+				intervalPageMin = 0;
+			} else {
+				intervalPageMin = numeroPage - 2;
+			}
+
+			if (numeroPage == nombrePageMax || numeroPage == nombrePageMax - 1 || numeroPage == nombrePageMax - 2) {
+				intervalPageMax = nombrePageMax - 1;
+			} else {
+				intervalPageMax = numeroPage + 2;
+			}
+		}
+
+		ArrayList<Computer> listeComputers;
+
+		try {
+
+			listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
+					numeroPage * nombreComputersByPage);
 		} catch (SQLException e) {
 			listeComputers = null;
 		}
 
 		request.setAttribute("liste", listeComputers);
 		request.setAttribute("page", numeroPage);
+		request.setAttribute("size", nombreComputersByPage);
+		request.setAttribute("intervalMin", intervalPageMin);
+		request.setAttribute("intervalMax", intervalPageMax);
 		request.setAttribute("nombreComputers", nombreComputers);
-		
-		this.getServletContext().getRequestDispatcher( "/views/dashboard.jsp" ).forward( request, response );
-	}
-	
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-
-		boolean isDeleteOk = false;
-		String selection = request.getParameter("selection");
-		
-		String[] deleteSelected = selection.split(",");
-		
-		for(int i=0; i<deleteSelected.length;i++)
-		{
-			System.out.println(deleteSelected[i]);
-			isDeleteOk = dao.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
-		}
-		
-		if(isDeleteOk) {
-			request.setAttribute("messageDelete", "Supression OK");
-		}else {
-			request.setAttribute("messageDelete", "Probleme de suppression");
-		}
-		
-		int nombreComputers = dao.getNumberComputers();
-		ArrayList<Computer> listeComputers;
-		
-		try {
-
-			listeComputers = dao.getComputersByLimitAndOffset(50,0);
-		} catch (SQLException e) {
-			listeComputers = null;
-		}
-		
-		request.setAttribute("liste", listeComputers);
-		request.setAttribute("nombreComputers", nombreComputers);
-
-		
-		this.getServletContext().getRequestDispatcher( "/views/dashboard.jsp" ).forward( request, response );
-
 	}
 
 }

@@ -255,7 +255,9 @@ public class DAOComputer {
 	
 			statement.setInt(1, id);
 
-			return statement.executeUpdate()==1;
+			int result = statement.executeUpdate();
+		    LOGGER.info("result -> " + result);
+			return result==1;
 		
 		}catch (SQLException e) {
 

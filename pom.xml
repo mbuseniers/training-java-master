@@ -13,6 +13,8 @@
 		<org.slf4j>1.7.25</org.slf4j>
 		<org.log4j.version>1.2.17</org.log4j.version>
 		<junit.version>4.12</junit.version>
+		<maven-war-plugin.version>3.2.0</maven-war-plugin.version>
+		<java.jstl.version>1.2</java.jstl.version>
 	</properties>
 
 	<dependencies>
@@ -42,43 +44,17 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.tomcat</groupId> -->
-		<!-- <artifactId>tomcat-servlet-api</artifactId> -->
-		<!-- <version>9.0.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.tomcat</groupId> -->
-		<!-- <artifactId>tomcat-catalina</artifactId> -->
-		<!-- <version>9.0.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
 
-		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/servlet-api -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.tomcat</groupId> -->
-		<!-- <artifactId>servlet-api</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- <version>6.0.53</version> -->
-		<!-- </dependency> -->
-		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.servlet</groupId> -->
-<!-- 			<artifactId>servlet-api</artifactId> -->
-<!-- 			<version>3.1.0</version> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
-<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.1.0</version>
-    <scope>provided</scope>
-</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<version>${java.jstl.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -87,7 +63,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${maven-war-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
