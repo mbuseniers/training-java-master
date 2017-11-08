@@ -25,7 +25,6 @@ public class DAOCompany {
 	
 
 	private DAOCompany() {
-		conn = ConnectionMySQL.getInstance();
 	}
 	
 	public static DAOCompany getInstance()
@@ -36,13 +35,15 @@ public class DAOCompany {
 	public ArrayList<Company> getCompanies()
 	{
 	    LOGGER.info("GetCompanies DAO");
+		conn = ConnectionMySQL.getConnection();
 		CompanyMapper cm = CompanyMapper.getInstance();
+		ResultSet rs=null;
 		ArrayList<Company> listCompanies = new ArrayList<>();
 		
-		PreparedStatement preparedStatement;
+		PreparedStatement preparedStatement=null;
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetCompanies);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 	    
 			while(rs.next()) {
 				listCompanies.add(cm.mappToCompany(rs.getInt(1), rs.getString(2)));
@@ -55,9 +56,17 @@ public class DAOCompany {
 		    return listCompanies;
 	
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOGGER.info("GetCompanies DAO Exception");
 			return null;
-		} 	
+		}finally {
+			try {
+				rs.close();
+				preparedStatement.close();
+				conn.close();
+			} catch (SQLException e) {
+			    LOGGER.info("SQL exception fermetures connection getCompanies");
+			}
+			
+		}
 	}
 }

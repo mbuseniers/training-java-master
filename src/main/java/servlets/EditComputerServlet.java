@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,7 +22,6 @@ public class EditComputerServlet extends HttpServlet {
 	private ComputerService computerService = ComputerService.getInstance();
 	private CompanyService companyService = CompanyService.getInstance();
 	private ValidatorService validatorService = ValidatorService.getInstance();
-
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -60,41 +60,41 @@ public class EditComputerServlet extends HttpServlet {
 		request.setAttribute("listeCompanies", listeCompanies);
 
 		boolean isNameOk = validatorService.checkName(request.getParameter("computerName"));
-		boolean isIntroducedOk =validatorService.checkDateFromString(request.getParameter("introduced"));
+		boolean isIntroducedOk = validatorService.checkDateFromString(request.getParameter("introduced"));
 		boolean isDiscontinuedOk = validatorService.checkDateFromString(request.getParameter("discontinued"));
-		boolean isCompanyOk = validatorService.checkCompany( Integer.valueOf(request.getParameter("companyId")),listeCompanies.size());
-		
+		boolean isCompanyOk = validatorService.checkCompany(Integer.valueOf(request.getParameter("companyId")),
+				listeCompanies.size());
+
 		if (!isNameOk) {
 			request.setAttribute("messageErrorName", "le Nom ne peut etre vide");
-		}else {
+		} else {
 			request.setAttribute("name", request.getParameter("computerName"));
 		}
 
 		if (!isCompanyOk) {
 			request.setAttribute("messageErrorCompany", "La company n'a pas été trouvée");
-		}else {
+		} else {
 			request.setAttribute("companyId", Integer.valueOf(request.getParameter("companyId")));
 		}
-		
+
 		if (!isIntroducedOk) {
 			request.setAttribute("messageErrorIntroduced", "Erreur de syntax");
-		}else {
+		} else {
 			request.setAttribute("introduced", request.getParameter("introduced"));
 		}
-		
+
 		if (!isDiscontinuedOk) {
 			request.setAttribute("messageErrorDiscontinued", "Erreur de syntax");
-		}else {
+		} else {
 			request.setAttribute("introduced", request.getParameter("discontinued"));
 		}
 
 		if (isNameOk && isIntroducedOk && isDiscontinuedOk && isCompanyOk) {
 
-			boolean isEditOk = computerService.editComputer(Integer.valueOf(request.getParameter("computerId")),
-															request.getParameter("computerName"), 
-															request.getParameter("introduced"), 
-															request.getParameter("discontinued"), 
-															Integer.valueOf(request.getParameter("companyId")));
+			boolean isEditOk = false;
+			isEditOk = computerService.editComputer(Integer.valueOf(request.getParameter("computerId")),
+					request.getParameter("computerName"), request.getParameter("introduced"),
+					request.getParameter("discontinued"), Integer.valueOf(request.getParameter("companyId")));
 
 			if (isEditOk) {
 				request.setAttribute("messageEdit", "Edit Ok");

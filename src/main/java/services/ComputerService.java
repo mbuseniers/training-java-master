@@ -34,7 +34,7 @@ public class ComputerService {
 	}
 
 	// addComputer JEE
-	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
+	public boolean addComputer(String name, String introduced, String discontinued, int company_id){
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate date_introduced;
@@ -66,7 +66,7 @@ public class ComputerService {
 	}
 
 	// editcomputer JEE
-	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
+	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id){
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate date_introduced;
@@ -98,11 +98,11 @@ public class ComputerService {
 
 	}
 
-	public int getNumberComputers() {
+	public int getNumberComputers(){
 		return da.getNumberComputers();
 	}
 
-	public boolean deleteComputer(String selection) {
+	public boolean deleteComputer(String selection) throws NumberFormatException, SQLException {
 		String[] deleteSelected = selection.split(",");
 		boolean isDeleteOk = true;
 
@@ -114,16 +114,24 @@ public class ComputerService {
 	}
 	
 
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws SQLException {
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset){
 		return da.getComputersByLimitAndOffset(limit, offset);
 	}
+	
+	public ArrayList<Computer> getComputersByName(String name){
+		return da.getComputersByName(name);
+	}
+	
+	public ArrayList<Computer> getComputersByCompanyName(String search) {
+		return da.getComputersByCompanyName(search);
+	}
 
-	public ArrayList<Computer> getComputers() throws SQLException {
+	public ArrayList<Computer> getComputers(){
 
 		return da.getComputers();
 	}
 
-	public boolean deleteComputer() {
+	public boolean deleteComputer(){
 		System.out.println("Saisir l'ID du Computer à supprimer");
 		int id = Utils.scanInt();
 		return da.deleteComputer(id);
@@ -131,7 +139,7 @@ public class ComputerService {
 	}
 
 	// addComputer interface graphique
-	public int addComputer() {
+	public int addComputer(){
 		String nom;
 		int id_company;
 
@@ -177,7 +185,7 @@ public class ComputerService {
 	}
 
 	// updateComputer pour l'interface graphique
-	public int updateComputer() {
+	public int updateComputer() throws SQLException {
 		System.out.println("Saisir l'ID du Computer à modifier");
 		int id = Utils.scanInt();
 
@@ -221,6 +229,8 @@ public class ComputerService {
 		return da.updateComputer(id, new Computer(nom, ts_inc, ts_des, new Company(id_company)));
 
 	}
+
+	
 
 
 }

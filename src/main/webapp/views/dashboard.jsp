@@ -30,14 +30,18 @@
 			<h2>
 				<c:out value="${messageDelete}" />
 			</h2>
+			<h2>
+				<c:out value="${messageErreurSearch}" />
+			</h2>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="GET" class="form-inline">
+					<form id="searchForm" action="#" method="POST" class="form-inline">
 
-						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
+						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
+						<input type="hidden" name="actionType" value="SEARCH">
+						<input type="submit" name="searchBy" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
+						<input type="submit" name="searchBy" id="searchsubmit" style = "margin-left : 5px;" value="Filter by company" class="btn btn-primary" /> 
+						<input type="hidden" name="actionType" value="SEARCH">
 					</form>
 				</div>
 				<div class="pull-right">
@@ -49,7 +53,8 @@
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="">
+			<input type="hidden" name="selection" value=""> <input
+				type="hidden" name="actionType" value="DELETE">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -101,62 +106,66 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="?changePage=1&page=<c:out value="${page-1}"/>&size=<c:out value="${size}"/> "
+				<li><a
+					href="?changePage=1&page=<c:out value="${page-1}"/>&size=<c:out value="${size}"/> "
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
-				
+
 				<c:forEach begin="${intervalMin}" end="${intervalMax}" var="i">
-								<li>
-									<a ${i == page ? 'style="font-weight: bold;"' : ''} href="?changePage=1&page=<c:out value="${i}"/>&size=<c:out value="${size}"/> "  >
-										<c:out value="${i+1}"/>
-									</a>
-								</li>
+					<li><a ${i == page ? 'style="font-weight: bold;"' : ''}
+						href="?changePage=1&page=<c:out value="${i}"/>&size=<c:out value="${size}"/> ">
+							<c:out value="${i+1}" />
+					</a></li>
 				</c:forEach>
-	         
-				<li><a href="?changePage=1&page=<c:out value="${page+1}"/>&size=<c:out value="${size}"/>"
+
+				<li><a
+					href="?changePage=1&page=<c:out value="${page+1}"/>&size=<c:out value="${size}"/>"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				
+
 				<c:if test="${size == 10}">
 					<a href="dashboard?changeSize=1&size=10" type="button">
-						<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">10</button>
-					</a> 
+						<button style="color: white; background-color: #337ab7;"
+							type="button" class="btn btn-default">10</button>
+					</a>
 				</c:if>
 				<c:if test="${size != 10}">
 					<a href="dashboard?changeSize=1&size=10" type="button">
 						<button type="button" class="btn btn-default">10</button>
-					</a> 
+					</a>
 				</c:if>
-				
+
 				<c:if test="${size == 50}">
-					<a  href="dashboard?changeSize=1&size=50" type="button">
-						<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">50</button>
-					</a> 
+					<a href="dashboard?changeSize=1&size=50" type="button">
+						<button style="color: white; background-color: #337ab7;"
+							type="button" class="btn btn-default">50</button>
+					</a>
 				</c:if>
-				
+
 				<c:if test="${size != 50}">
-					<a  href="dashboard?changeSize=1&size=50" type="button">
-					<button  type="button" class="btn btn-default">50</button>
-					</a> 
+					<a href="dashboard?changeSize=1&size=50" type="button">
+						<button type="button" class="btn btn-default">50</button>
+					</a>
 				</c:if>
-				
-				
+
+
 				<c:if test="${size == 100}">
 					<a href="dashboard?changeSize&size=100" type="button">
-					<button style = "color: white;background-color: #337ab7;" type="button" class="btn btn-default">100</button>
+						<button style="color: white; background-color: #337ab7;"
+							type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>
-				
+
 				<c:if test="${size != 100}">
 					<a href="dashboard?changeSize&size=100" type="button">
-					<button type="button" class="btn btn-default">100</button>
+						<button type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>
-				
-				
+
+
 
 			</div>
 	</footer>

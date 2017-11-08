@@ -9,7 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dao.DAOComputer;
+import interfaceProjet.Main;
 import model.Computer;
 import services.ComputerService;
 import services.ValidatorService;
@@ -20,36 +24,68 @@ public class DashboardServlet extends HttpServlet {
 
 	private ComputerService computerService = ComputerService.getInstance();
 	private ValidatorService validatorService = ValidatorService.getInstance();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 
+		LOGGER.info("doGet servlet dashboard");
+
 		doPagination(request, response);
-		
+
 		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		LOGGER.info("doPOst servlet dashboard");
+		ArrayList<Computer> listeComputers = null;
+		int page = 0, size = 50, intervalMin = 0, intervalMax = 4;
+		int nombreComputers = 0;
+		String actionType = request.getParameter("actionType");
 
-		boolean isDeleteOk = computerService.deleteComputer(request.getParameter("selection"));
-		int page=0, size=50, intervalMin=0, intervalMax=4;
-		
-		if (isDeleteOk) {
-			request.setAttribute("messageDelete", "Supression OK");
-		} else {
-			request.setAttribute("messageDelete", "Probleme de suppression");
-		}
+		if (actionType.equals("DELETE")) {
 
-		int nombreComputers = computerService.getNumberComputers();
-		ArrayList<Computer> listeComputers;
+			boolean isDeleteOk = false;
+			try {
+				isDeleteOk = computerService.deleteComputer(request.getParameter("selection"));
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if (isDeleteOk) {
+				request.setAttribute("messageDelete", "Supression OK");
+			} else {
+				request.setAttribute("messageDelete", "Probleme de suppression");
+			}
 
-		try {
-
+			nombreComputers = computerService.getNumberComputers();
 			listeComputers = computerService.getComputersByLimitAndOffset(size, page);
-		} catch (SQLException e) {
-			listeComputers = null;
+
+		} else if (actionType.equals("SEARCH")) {
+			LOGGER.info("doPOst SEARCH");
+			String search = request.getParameter("search");
+			if (!search.equals("")) {
+
+				String searchBy = request.getParameter("searchBy");
+
+				if (request.getParameter("searchBy").equals("Filter by name")) {
+					LOGGER.info("SEARCH by name");
+					listeComputers = computerService.getComputersByName(search);
+				} else if (request.getParameter("searchBy").equals("Filter by company")) {
+					LOGGER.info("SEARCH by company");
+					listeComputers = computerService.getComputersByCompanyName(search);
+				}
+				nombreComputers = listeComputers.size();
+
+			} else {
+				request.setAttribute("messageErreurSearch", "La recherche ne peut être nulle");
+				listeComputers = null;
+			}
+
 		}
 
 		request.setAttribute("liste", listeComputers);
@@ -132,13 +168,8 @@ public class DashboardServlet extends HttpServlet {
 
 		ArrayList<Computer> listeComputers;
 
-		try {
-
-			listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
-					numeroPage * nombreComputersByPage);
-		} catch (SQLException e) {
-			listeComputers = null;
-		}
+		listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
+				numeroPage * nombreComputersByPage);
 
 		request.setAttribute("liste", listeComputers);
 		request.setAttribute("page", numeroPage);
