@@ -40,49 +40,20 @@ public class Main {
 			switch(choix) {
 			
 			case 1 : 
-				CptService = ComputerService.getInstance();
 				
-				System.out.println("Liste des Computers : ");
-				
-				CptService.getComputers().stream().forEach(System.out::println);
 				
 				break;
 				
 			case 2 : 
-				/*
-				CptService = ComputerService.getInstance();
-				result = CptService.addComputer();
 				
-				if(result == 1 ) {
-					System.out.println("Ajout Ok");
-				} else {
-					System.out.println("Ajout non effectué");
-				}*/
 				
 				break;
 				
 			case 3 : 
-				/*
-				CptService = ComputerService.getInstance();
-				result = CptService.updateComputer();
-				
-				if(result == 1 ){
-					System.out.println("Update Ok");
-				} else {
-					System.out.println("Update non effectué");
-				}*/
 				
 				break;
 				
 			case 4 : 
-				/*
-				CptService = ComputerService.getInstance();
-				boolean res = CptService.deleteComputer();
-				if(res) {
-					System.out.println("Delete Ok");
-				} else {
-					System.out.println("Delete non effectué");
-				}*/
 				
 				break;
 				

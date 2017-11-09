@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import exceptions.DAOException;
 import jdbc.ConnectionMySQL;
 import mappers.ComputerMapper;
 import model.Computer;
@@ -21,19 +22,14 @@ public class DAOComputer {
 	static DAOComputer DA = new DAOComputer();
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputer.class);
 
-	private String sqlGetComputers = "SELECT * FROM computer";
-	private String sqlGetComputersLimitOffset = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
-	private String sqlGetComputersByName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE '%' ? '%'";
-	private String sqlGetComputersByCompanyName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE company.name LIKE '%' ? '%'";
-	private String sqlGetNumberComputers = "SELECT COUNT(*) FROM computer";
-	private String sqlInsertComputer = "INSERT INTO computer" + "(name, introduced, discontinued, company_id) VALUES"
-			+ "(?,?,?,?)";
-
-	private String sqlUpdateComputer = "UPDATE computer SET name = ? , introduced = ? , discontinued = ? ,  company_id = ? "
-			+ " WHERE id = ?";
-
-	private String sqlDeleteComputer = "DELETE FROM computer WHERE id = ?";
-	private String sqlDeleteAllComputerByCompanyId = "DELETE FROM computer WHERE company_id = ? ";
+	private final String sqlGetComputersLimitOffset = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private final String sqlGetComputersByName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE '%' ? '%'";
+	private final String sqlGetComputersByCompanyName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE company.name LIKE '%' ? '%'";
+	private final String sqlGetNumberComputers = "SELECT COUNT(*) FROM computer";
+	private final String sqlInsertComputer = "INSERT INTO computer" + "(name, introduced, discontinued, company_id) VALUES(?,?,?,?)";
+	private final String sqlUpdateComputer = "UPDATE computer SET name = ? , introduced = ? , discontinued = ? ,  company_id = ? WHERE id = ?";
+	private final String sqlDeleteComputer = "DELETE FROM computer WHERE id = ?";
+	private final String sqlDeleteAllComputerByCompanyId = "DELETE FROM computer WHERE company_id = ? ";
 	
 	private DAOComputer() {
 	}
@@ -42,381 +38,200 @@ public class DAOComputer {
 		return DA;
 	}
 
-	public int getNumberComputers() {
+	public int getNumberComputers() throws DAOException {
 		LOGGER.info("GetNumberComputer DAO");
-
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
-		Connection conn = ConnectionMySQL.getConnection();
-
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetNumberComputers);
-			rs = preparedStatement.executeQuery();
+		try (Connection conn = ConnectionMySQL.getConnection();
+			PreparedStatement preparedStatement=conn.prepareStatement(sqlGetNumberComputers);
+			ResultSet rs=preparedStatement.executeQuery()){
 
 			rs.next();
-			int number = rs.getInt(1);
-
-			return number;
+			return rs.getInt(1);
 
 		} catch (SQLException e) {
-			LOGGER.info("SQL exception get number computers");
-			return 0;
-		} finally {
-
-			try {
-				preparedStatement.close();
-				conn.close();
-				rs.close();
-			} catch (SQLException e) {
-				LOGGER.info("SQL exception fermetures get number computers");
-			}
+			LOGGER.error("SQL exception get number computers");
+			throw new DAOException("SQL exception get number computers");
 		}
-
 	}
 
-	public ArrayList<Computer> getComputers() {
-		LOGGER.info("GetComputer DAO");
-
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
-		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn = ConnectionMySQL.getConnection();
-
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetComputers);
-			rs = preparedStatement.executeQuery();
-
-			ArrayList<Computer> listeComputers = new ArrayList<>();
-
-			while (rs.next()) {
-				LocalDate dateInc;
-				LocalDate dateDis;
-
-				if (rs.getDate(3) == null)
-					dateInc = null;
-				else
-					dateInc = rs.getDate(3).toLocalDate();
-				if (rs.getDate(4) == null)
-					dateDis = null;
-				else
-					dateDis = rs.getDate(4).toLocalDate();
-
-				listeComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), dateInc, dateDis, rs.getInt(5),
-						rs.getString(7)));
-			}
-
-			return listeComputers;
-
-		} catch (SQLException e) {
-			LOGGER.info("sqlexception dao get computers");
-			return null;
-		} finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao get computers");
-
-			}
-
-		}
-
-	}
-
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws DAOException {
 		LOGGER.info("GetComputer Limite Offset DAO");
-
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn = ConnectionMySQL.getConnection();
-
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetComputersLimitOffset);
-			preparedStatement.setInt(1, limit);
-			preparedStatement.setInt(2, offset);
-
-			rs = preparedStatement.executeQuery();
-
-			ArrayList<Computer> listeComputers = new ArrayList<>();
+		ArrayList<Computer> listComputers = new ArrayList<>();
+		
+		try(Connection conn = ConnectionMySQL.getConnection();
+			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersLimitOffset, limit, offset);
+			ResultSet rs=preparedStatement.executeQuery()){
 
 			while (rs.next()) {
-				LocalDate dateInc;
-				LocalDate dateDis;
+				LocalDate dateInc = checkDateIsNull(rs.getDate(3));
+				LocalDate dateDis = checkDateIsNull(rs.getDate(4));
 
-				if (rs.getDate(3) == null)
-					dateInc = null;
-				else
-					dateInc = rs.getDate(3).toLocalDate();
-				if (rs.getDate(4) == null)
-					dateDis = null;
-				else
-					dateDis = rs.getDate(4).toLocalDate();
-
-				listeComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), dateInc, dateDis, rs.getInt(5),
+				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), dateInc, dateDis, rs.getInt(5),
 						rs.getString(7)));
 			}
-
-			return listeComputers;
-
 		} catch (SQLException e) {
-			LOGGER.info("sqlexception dao get computers by limit offset");
-			return null;
-		} finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao get computers by limit offset");
-
-			}
+			LOGGER.error("sqlexception dao get computers by limit offset");
+			throw new DAOException("sqlexception dao get computers by limit offset");
 
 		}
+		return listComputers;
 	}
 
-	public ArrayList<Computer> getComputersByName(String name) {
+	public ArrayList<Computer> getComputersByName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by name DAO");
-
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
+		ArrayList<Computer> listComputers = new ArrayList<>();
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn = ConnectionMySQL.getConnection();
 
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetComputersByName);
-			preparedStatement.setString(1, name);
-
-			rs = preparedStatement.executeQuery();
-
-			ArrayList<Computer> listeComputers = new ArrayList<>();
+		try(Connection conn = ConnectionMySQL.getConnection();
+			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByName,name);
+			ResultSet rs=preparedStatement.executeQuery()){
 
 			while (rs.next()) {
-				LocalDate date_inc;
-				LocalDate date_dis;
+				LocalDate date_inc = checkDateIsNull(rs.getDate(3));
+				LocalDate date_dis = checkDateIsNull(rs.getDate(4));
 
-				if (rs.getDate(3) == null)
-					date_inc = null;
-				else
-					date_inc = rs.getDate(3).toLocalDate();
-				if (rs.getDate(4) == null)
-					date_dis = null;
-				else
-					date_dis = rs.getDate(4).toLocalDate();
-
-				listeComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
+				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
 						rs.getString(7)));
 			}
-
-			return listeComputers;
-
 		} catch (SQLException e) {
-			LOGGER.info("sqlexception dao get computers by name");
-			return null;
-		} finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao get computers by name");
+			LOGGER.error("sqlexception dao get computers by name");
+			throw new DAOException("sqlexception dao get computers by name");
 
-			}
-
-		}
+		} 
+		return listComputers;
 	}
 
-	public int addComputer(Computer computer) {
+	public int addComputer(Computer computer) throws DAOException {
 		LOGGER.info("AddComputer DAO");
-		Connection conn = ConnectionMySQL.getConnection();
 
-		try {
-			PreparedStatement statement = conn.prepareStatement(sqlInsertComputer);
-
-			statement.setString(1, computer.getName());
-
-			if (computer.getDate_introduced() == null) {
-				statement.setDate(2, null);
-			} else {
-				statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
-
-			}
-
-			if (computer.getDate_discontinued() == null) {
-				statement.setDate(3, null);
-
-			} else {
-				statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
-			}
-			statement.setInt(4, computer.getCompany().getId());
-
-			return statement.executeUpdate();
-
+		try (Connection conn = ConnectionMySQL.getConnection();
+				PreparedStatement preparedStatement=doPreparedStatement(conn, sqlInsertComputer,computer.getName(),
+						checkLocalDateIsNull(computer.getDateIntroduced()),
+						checkLocalDateIsNull(computer.getDateDiscontinued()),
+								computer.getCompany().getId())){
+			
+			return preparedStatement.executeUpdate();
 		} catch (SQLException e) {
+			LOGGER.error("SQLException addComputer Dao");
+			throw new DAOException("SQLException addComputer Dao");
 
-			LOGGER.info("SQLException addComputer Dao");
-			return -1;
-
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao add computer");
-
-			}
 		}
 	}
 
-	public int updateComputer(int id, Computer computer) {
+	public int updateComputer(int id, Computer computer) throws DAOException {
 		LOGGER.info("UpdateComputer DAO");
-		Connection conn = ConnectionMySQL.getConnection();
+		try (Connection conn = ConnectionMySQL.getConnection();
+				PreparedStatement preparedStatement=doPreparedStatement(conn, sqlUpdateComputer,computer.getName(),
+						checkLocalDateIsNull(computer.getDateIntroduced()),
+						checkLocalDateIsNull(computer.getDateDiscontinued()),
+								computer.getCompany().getId(),id)){
 
-		try {
-
-			PreparedStatement statement = conn.prepareStatement(sqlUpdateComputer);
-
-			statement.setString(1, computer.getName());
-
-			if (computer.getDate_introduced() == null) {
-				statement.setDate(2, null);
-			} else {
-				statement.setDate(2, Date.valueOf(computer.getDate_introduced()));
-
-			}
-
-			if (computer.getDate_discontinued() == null) {
-				statement.setDate(3, null);
-
-			} else {
-				statement.setDate(3, Date.valueOf(computer.getDate_discontinued()));
-			}
-
-			statement.setInt(4, computer.getCompany().getId());
-			statement.setInt(5, id);
-
-			return statement.executeUpdate();
-
+			return preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-
-			LOGGER.info("SQLException updateComputer Dao");
-			return -1;
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception dao update computer");
-
-			}
+			LOGGER.error("SQLException updateComputer Dao");
+			throw new DAOException("SQLException updateComputer Dao");
 		}
 	}
 
-	public boolean deleteComputer(int id) {
+	public boolean deleteComputer(int id) throws DAOException {
 		LOGGER.info("DeleteComputer DAO id -> " + id);
-		Connection conn = ConnectionMySQL.getConnection();
-		PreparedStatement statement = null;
-		try {
-			statement = conn.prepareStatement(sqlDeleteComputer);
-			statement.setInt(1, id);
-
-			int result = statement.executeUpdate();
-			LOGGER.info("result -> " + result);
+		try(Connection conn = ConnectionMySQL.getConnection();
+			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlDeleteComputer, id)) {
+			
+			int result = preparedStatement.executeUpdate();
 			return result == 1;
-
 		} catch (SQLException e) {
-
-			LOGGER.info("SQLException deleteComputer Dao");
-			return false;
-		} finally {
-			try {
-				conn.close();
-				statement.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception dao delete computers");
-
-			}
+			LOGGER.error("SQLException deleteComputer Dao");
+			throw new DAOException("SQLException updateComputer Dao");
 		}
-
 	}
 
-	public ArrayList<Computer> getComputersByCompanyName(String name) {
+	public ArrayList<Computer> getComputersByCompanyName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by company name DAO");
-
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
+		ArrayList<Computer> listComputers = new ArrayList<>();
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn = ConnectionMySQL.getConnection();
 
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetComputersByCompanyName);
-			preparedStatement.setString(1, name);
-
-			rs = preparedStatement.executeQuery();
-
-			ArrayList<Computer> listeComputers = new ArrayList<>();
+		try(Connection conn = ConnectionMySQL.getConnection();
+			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByCompanyName,name);
+			ResultSet rs=preparedStatement.executeQuery()){
 
 			while (rs.next()) {
-				LocalDate date_inc;
-				LocalDate date_dis;
+				LocalDate date_inc = checkDateIsNull(rs.getDate(3));
+				LocalDate date_dis = checkDateIsNull(rs.getDate(4));
 
-				if (rs.getDate(3) == null)
-					date_inc = null;
-				else
-					date_inc = rs.getDate(3).toLocalDate();
-				if (rs.getDate(4) == null)
-					date_dis = null;
-				else
-					date_dis = rs.getDate(4).toLocalDate();
-
-				listeComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
+				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
 						rs.getString(7)));
 			}
-
-			return listeComputers;
-
 		} catch (SQLException e) {
-			LOGGER.info("sqlexception dao get computers by company name");
+			LOGGER.error("sqlexception dao get computers by name");
+			throw new DAOException("sqlexception dao get computers by name");
+		} 
+		return listComputers;
+	}
+	
+	public boolean deleteAllComputersByCompanyId(int companyId, Connection c) throws DAOException {
+		LOGGER.info("Delete all computers by id company DAO");
+		try (PreparedStatement preparedStatement=doPreparedStatement(conn, sqlDeleteAllComputerByCompanyId,companyId)){
+			int result = preparedStatement.executeUpdate();
+			return result >= 0;
+		} catch (SQLException e) {
+			LOGGER.error("sqlexception dao get computers by company name");
+			throw new DAOException("sqlexception dao get computers by company name");
+		}
+	}
+	
+	public LocalDate checkDateIsNull(Date date) {
+		if (date == null)
 			return null;
-		} finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao get computers by name");
-
-			}
+		else
+			return date.toLocalDate();
+	}
+	
+	public Date checkLocalDateIsNull(LocalDate localDate) {
+		if (localDate == null) {
+			return null;
+		} else {
+			return Date.valueOf(localDate);
 
 		}
 	}
 	
-	public boolean deleteAllComputersByCompanyId(int companyId, Connection c) {
-		LOGGER.info("Delete all computers by id company DAO");
-
-		PreparedStatement preparedStatement = null;
-		//Connection conn = ConnectionMySQL.getConnection();
-
-		try {
-			preparedStatement = c.prepareStatement(sqlDeleteAllComputerByCompanyId);
-			preparedStatement.setInt(1, companyId);
-
-			int result = preparedStatement.executeUpdate();
-
-			return result >= 0;
-
-
-		} catch (SQLException e) {
-			LOGGER.info("sqlexception dao get computers by company name");
-			return false;
-		} finally {
-			try {
-				preparedStatement.close();
-			} catch (SQLException e) {
-				LOGGER.info("sqlexception fermetures dao get computers by name");
-
-			}
-
-		}
+	public static PreparedStatement doPreparedStatement(Connection conn,String sql,  int param1) throws SQLException {
+		PreparedStatement ps= conn.prepareStatement(sql);
+		ps.setInt(1, param1);
+		return ps;
+	}
+	
+	public static PreparedStatement doPreparedStatement(Connection conn,String sql,  int param1, int param2) throws SQLException {
+		PreparedStatement ps= conn.prepareStatement(sql);
+		ps.setInt(1, param1);
+		ps.setInt(2, param2);
+		return ps;
+	}
+	
+	public static PreparedStatement doPreparedStatement(Connection conn,String sql, String param1) throws SQLException {
+		PreparedStatement ps= conn.prepareStatement(sql);
+		ps.setString(1, param1);
+		return ps;
+	}
+	
+	public static PreparedStatement doPreparedStatement(Connection conn,String sql, String param1, Date param2, Date param3, int param4) throws SQLException {
+		PreparedStatement ps= conn.prepareStatement(sql);
+		ps.setString(1, param1);
+		ps.setDate(2, param2);
+		ps.setDate(3, param3);
+		ps.setInt(4, param4);
+		return ps;
+	}
+	
+	public static PreparedStatement doPreparedStatement(Connection conn,String sql, String param1, Date param2, Date param3, int param4, int param5) throws SQLException {
+		PreparedStatement ps= conn.prepareStatement(sql);
+		ps.setString(1, param1);
+		ps.setDate(2, param2);
+		ps.setDate(3, param3);
+		ps.setInt(4, param4);
+		ps.setInt(5, param5);
+		return ps;
 	}
 
 }

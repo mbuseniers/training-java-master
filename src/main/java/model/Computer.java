@@ -6,8 +6,8 @@ public class Computer {
 
 	private int id;
 	private String name;
-	private LocalDate date_introduced;
-	private LocalDate date_discontinued;
+	private LocalDate dateIntroduced;
+	private LocalDate dateDiscontinued;
 	private Company company;
 	
 	
@@ -25,17 +25,17 @@ public class Computer {
 		this.name = name;
 	}
 	
-	public LocalDate getDate_introduced() {
-		return date_introduced;
+	public LocalDate getDateIntroduced() {
+		return dateIntroduced;
 	}
-	public void setDate_introduced(LocalDate date_introduced) {
-		this.date_introduced = date_introduced;
+	public void setDateIntroduced(LocalDate date_introduced) {
+		this.dateIntroduced = date_introduced;
 	}
-	public LocalDate getDate_discontinued() {
-		return date_discontinued;
+	public LocalDate getDateDiscontinued() {
+		return dateDiscontinued;
 	}
-	public void setDate_discontinued(LocalDate date_discontinued) {
-		this.date_discontinued = date_discontinued;
+	public void setDateDiscontinued(LocalDate date_discontinued) {
+		this.dateDiscontinued = date_discontinued;
 	}
 		
 	
@@ -50,8 +50,8 @@ public class Computer {
 	public Computer(String name, LocalDate ts_inc, LocalDate ts_des,Company company) {
 		super();
 		this.name = name;
-		this.date_introduced = ts_inc;
-		this.date_discontinued = ts_des;
+		this.dateIntroduced = ts_inc;
+		this.dateDiscontinued = ts_des;
 		this.company = company;
 	}
 	
@@ -59,14 +59,14 @@ public class Computer {
 		super();
 		this.id = id;
 		this.name = name;
-		this.date_introduced = ts_inc;
-		this.date_discontinued = ts_des;
+		this.dateIntroduced = ts_inc;
+		this.dateDiscontinued = ts_des;
 		this.company = company;
 	}
 	
 	public String toString()
 	{
-		return "ID : " + id + " -- NOM : " + name + " -- Date Introduced : " + date_introduced + " -- Date Discontinued : " + date_discontinued + " -- ID COMPANY : " + company.getId();
+		return "ID : " + id + " -- NOM : " + name + " -- Date Introduced : " + dateIntroduced + " -- Date Discontinued : " + dateDiscontinued + " -- ID COMPANY : " + company.getId();
 		
 	}
 

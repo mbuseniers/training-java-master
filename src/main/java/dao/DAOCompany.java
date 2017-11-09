@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import exceptions.DAOException;
 import interfaceProjet.Main;
 import jdbc.ConnectionMySQL;
 import mappers.CompanyMapper;
@@ -16,10 +17,9 @@ import model.Company;
 
 public class DAOCompany {
 
-	
 	Connection conn;
 	static DAOCompany DA = new DAOCompany();
-	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompany.class);
 
 	private String sqlGetCompanies = "SELECT * FROM company";
 	private String sqlCheckIdCompany = "SELECT * FROM company WHERE ? = company.id";
@@ -27,140 +27,84 @@ public class DAOCompany {
 
 	private DAOCompany() {
 	}
-	
-	public static DAOCompany getInstance()
-	{
+
+	public static DAOCompany getInstance() {
 		return DA;
 	}
-	
-	public ArrayList<Company> getCompanies()
-	{
-	    LOGGER.info("GetCompanies DAO");
-		conn = ConnectionMySQL.getConnection();
+
+	public ArrayList<Company> getCompanies() {
+		LOGGER.info("GetCompanies DAO");
 		CompanyMapper cm = CompanyMapper.getInstance();
-		ResultSet rs=null;
 		ArrayList<Company> listCompanies = new ArrayList<>();
-		
-		PreparedStatement preparedStatement=null;
-		try {
-			preparedStatement = conn.prepareStatement(sqlGetCompanies);
-			rs = preparedStatement.executeQuery();
-	    
-			while(rs.next()) {
+
+		try (Connection conn = ConnectionMySQL.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sqlGetCompanies);
+				ResultSet rs = ps.executeQuery()) {
+
+			while (rs.next()) {
 				listCompanies.add(cm.mappToCompany(rs.getInt(1), rs.getString(2)));
-				
+
 			}
-			
-		    rs.close();
-		    preparedStatement.close();
-			
-		    return listCompanies;
-	
 		} catch (SQLException e) {
-		    LOGGER.info("GetCompanies DAO Exception");
+			LOGGER.error("GetCompanies DAO Exception");
 			return null;
-		}finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-			    LOGGER.info("SQL exception fermetures connection getCompanies");
-			}
-			
 		}
+		return listCompanies;
 	}
-	
+
 	public boolean checkIdCompany(int id) {
 		LOGGER.info("check Id company DAO");
-		conn = ConnectionMySQL.getConnection();
-		ResultSet rs=null;
-		
-		PreparedStatement preparedStatement=null;
-		try {
-			preparedStatement = conn.prepareStatement(sqlCheckIdCompany);
-			preparedStatement.setInt(1, id);
-			rs = preparedStatement.executeQuery();
+		try (Connection conn = ConnectionMySQL.getConnection();
+				PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlCheckIdCompany, id);
+				ResultSet rs = ps.executeQuery()) {
 
 			rs.next();
 			try {
 				rs.getInt(1);
 				return true;
-			}catch(NullPointerException e) {
+			} catch (NullPointerException e) {
 				return false;
 			}
-				
 		} catch (SQLException e) {
-		    LOGGER.info("Check ID Company DAO Exception");
+			LOGGER.error("Check ID Company DAO Exception");
 			return false;
-		}finally {
-			try {
-				rs.close();
-				preparedStatement.close();
-				conn.close();
-			} catch (SQLException e) {
-			    LOGGER.info("SQL exception fermetures connection getCompanies");
-			}
-			
 		}
 	}
-	
-	public boolean deleteCompanyById(int id) {
+
+	public boolean deleteCompanyById(int id){
 		LOGGER.info("delete company DAO");
-		conn = ConnectionMySQL.getConnection();
 		DAOComputer daoComputer = DAOComputer.getInstance();
 
-		
-		try {
+		try (Connection conn = ConnectionMySQL.getConnection()) {
 			conn.setAutoCommit(false);
-		} catch (SQLException e1) {
-			LOGGER.info("sql exception set auto commit");
-		}
-		
-		boolean deleteComputersOk = daoComputer.deleteAllComputersByCompanyId(id, conn);
-		
-		if(deleteComputersOk) {
-			
-			PreparedStatement preparedStatement=null;
+			boolean deleteComputersOk;
 			try {
-				preparedStatement = conn.prepareStatement(sqlDeleteCompanyById);
-				preparedStatement.setInt(1, id);
-				int result =  preparedStatement.executeUpdate();
-				conn.setAutoCommit(true);
-				return result==1;
-
-					
-			} catch (SQLException e) {
-			    LOGGER.info("Check ID Company DAO Exception");
-			    try {
-					conn.rollback();
-				} catch (SQLException e1) {
-					LOGGER.info("sql exception rollback delete company");
-				}
+				deleteComputersOk = daoComputer.deleteAllComputersByCompanyId(id, conn);
+			} catch (DAOException e1) {
+				e1.printStackTrace();
 				return false;
-			}finally {
-				try {
-					preparedStatement.close();
-					conn.close();
-				} catch (SQLException e) {
-				    LOGGER.info("SQL exception fermetures connection getCompanies");
-				}
-				
 			}
 			
-			
-			
-		}else {
-			try {
-				conn.rollback();
-			} catch (SQLException e) {
-				LOGGER.info("sql exception rollback deletecomputers");
+			if (deleteComputersOk) {
 
+				try (PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlDeleteCompanyById, id)){
+					int result = ps.executeUpdate();
+					conn.setAutoCommit(true);
+					return result == 1;
+				} catch (SQLException e) {
+					LOGGER.error("Check ID Company DAO Exception");
+					conn.rollback();
+					return false;
+				} 
+			} else {
+				conn.rollback();
+				return false;
 			}
+
+		}catch (SQLException e) {
+			LOGGER.error("sql exception deletecomputers");
 			return false;
 		}
-	
+
 	}
-	
-	
 }

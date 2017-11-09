@@ -1,27 +1,22 @@
 package services;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import dao.DAOComputer;
+import exceptions.DAOException;
 import model.Company;
 import model.Computer;
-import utils.Utils;
 
 public class ComputerService {
 
 	private static ComputerService cs;
 	private DAOComputer da;
-	private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 
-	
 	private ComputerService() {
 		da = DAOComputer.getInstance();
 	}
@@ -33,106 +28,104 @@ public class ComputerService {
 		return cs;
 	}
 
-	// addComputer JEE
-	public boolean addComputer(String name, String introduced, String discontinued, int company_id){
+	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate dateIntroduced;
-		LocalDate dateDiscontinued;
-
-		if (!introduced.equals("")) {
-			try {
-				dateIntroduced = LocalDate.parse(introduced, formatter);
-			} catch (DateTimeParseException e) {
-				dateIntroduced = null;
-			}
-		} else {
-			dateIntroduced = null;
+		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
+		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
+		try {
+			return da.addComputer(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return false;
 		}
-
-		if (!discontinued.equals("")) {
-			try {
-				dateDiscontinued = LocalDate.parse(discontinued, formatter);
-			} catch (DateTimeParseException e) {
-				dateDiscontinued = null;
-
-			}
-		} else {
-			dateDiscontinued = null;
-		}
-
-		return da.addComputer(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
 
 	}
 
-	// editcomputer JEE
-	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id){
+	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate dateIntroduced;
-		LocalDate dateDiscontinued;
-
-		if (!introduced.equals("")) {
-			try {
-				dateIntroduced = LocalDate.parse(introduced, formatter);
-			} catch (DateTimeParseException e) {
-				dateIntroduced = null;
-			}
-		} else {
-			dateIntroduced = null;
+		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
+		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
+		try {
+			return da.updateComputer(id,
+					new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return false;
 		}
-
-		if (!discontinued.equals("")) {
-			try {
-				dateDiscontinued = LocalDate.parse(discontinued, formatter);
-			} catch (DateTimeParseException e) {
-				dateDiscontinued = null;
-
-			}
-		} else {
-			dateDiscontinued = null;
-		}
-
-		return da.updateComputer(id,
-				new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
 
 	}
 
-	public int getNumberComputers(){
-		return da.getNumberComputers();
+	public int getNumberComputers() {
+		try {
+			return da.getNumberComputers();
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 
-	public boolean deleteComputer(String selection){
+	public boolean deleteComputer(String selection) {
 		String[] deleteSelected = selection.split(",");
 		boolean isDeleteOk = true;
 
 		for (int i = 0; i < deleteSelected.length; i++) {
-			isDeleteOk = da.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
-		    LOGGER.info("isdeleteok -> " + isDeleteOk);
+			try {
+				isDeleteOk = da.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
+			} catch (DAOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			LOGGER.info("isdeleteok -> " + isDeleteOk);
 		}
 		return isDeleteOk;
 	}
-	
 
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset){
-		return da.getComputersByLimitAndOffset(limit, offset);
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
+		ArrayList<Computer> listComputers = new ArrayList<>();
+
+		try {
+			listComputers = da.getComputersByLimitAndOffset(limit, offset);
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
+		return listComputers;
 	}
-	
-	public ArrayList<Computer> getComputersByName(String name){
-		return da.getComputersByName(name);
+
+	public ArrayList<Computer> getComputersByName(String name) {
+		ArrayList<Computer> listComputers = new ArrayList<>();
+
+		try {
+			listComputers = da.getComputersByName(name);
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
+		return listComputers;
 	}
-	
+
 	public ArrayList<Computer> getComputersByCompanyName(String search) {
-		return da.getComputersByCompanyName(search);
+		ArrayList<Computer> listComputers = new ArrayList<>();
+		try {
+			listComputers = da.getComputersByCompanyName(search);
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
+		return listComputers;
 	}
 
-	public ArrayList<Computer> getComputers(){
+	public LocalDate checkDateIsCorrect(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate localDate;
 
-		return da.getComputers();
+		if (!date.isEmpty()) {
+			try {
+				localDate = LocalDate.parse(date, formatter);
+				return localDate;
+			} catch (DateTimeParseException e) {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
-
-
-
-
 
 }
