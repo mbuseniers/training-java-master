@@ -23,7 +23,6 @@ public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ComputerService computerService = ComputerService.getInstance();
-	private ValidatorService validatorService = ValidatorService.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,28 +39,23 @@ public class DashboardServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOGGER.info("doPOst servlet dashboard");
 		ArrayList<Computer> listeComputers = null;
-		int page = 0, size = 50, intervalMin = 0, intervalMax = 4;
+		int page = 0, size = 50, intervalMin = 0, intervalMax = 0;
 		int nombreComputers = 0;
 		String actionType = request.getParameter("actionType");
 
 		if (actionType.equals("DELETE")) {
 
 			boolean isDeleteOk = false;
-			try {
 				isDeleteOk = computerService.deleteComputer(request.getParameter("selection"));
-			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 			if (isDeleteOk) {
 				request.setAttribute("messageDelete", "Supression OK");
 			} else {
 				request.setAttribute("messageDelete", "Probleme de suppression");
 			}
 
+			intervalMin=0;
+			intervalMax=2;
 			nombreComputers = computerService.getNumberComputers();
 			listeComputers = computerService.getComputersByLimitAndOffset(size, page);
 
@@ -70,8 +64,6 @@ public class DashboardServlet extends HttpServlet {
 			String search = request.getParameter("search");
 			if (!search.equals("")) {
 
-				String searchBy = request.getParameter("searchBy");
-
 				if (request.getParameter("searchBy").equals("Filter by name")) {
 					LOGGER.info("SEARCH by name");
 					listeComputers = computerService.getComputersByName(search);
@@ -79,6 +71,11 @@ public class DashboardServlet extends HttpServlet {
 					LOGGER.info("SEARCH by company");
 					listeComputers = computerService.getComputersByCompanyName(search);
 				}
+				
+				size=100;
+				intervalMin=0;
+				intervalMax=0;
+				
 				nombreComputers = listeComputers.size();
 
 			} else {

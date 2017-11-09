@@ -24,5 +24,13 @@ public class CompanyService {
 	public ArrayList<Company> getCompanies() {
 		return da.getCompanies();
 	}
+	
+	public boolean checkIdCompany(int id) {
+		return da.checkIdCompany(id);
+	}
+	
+	public boolean deleteCompanyById(int id) {
+		return da.deleteCompanyById(id);
+	}
 
 }

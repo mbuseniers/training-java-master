@@ -33,20 +33,22 @@ public class DAOComputer {
 			+ " WHERE id = ?";
 
 	private String sqlDeleteComputer = "DELETE FROM computer WHERE id = ?";
-
-	private DAOComputer() {}
+	private String sqlDeleteAllComputerByCompanyId = "DELETE FROM computer WHERE company_id = ? ";
+	
+	private DAOComputer() {
+	}
 
 	public static DAOComputer getInstance() {
 		return DA;
 	}
 
-	public int getNumberComputers(){
+	public int getNumberComputers() {
 		LOGGER.info("GetNumberComputer DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
-		Connection conn=ConnectionMySQL.getConnection();
-		
+		Connection conn = ConnectionMySQL.getConnection();
+
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetNumberComputers);
 			rs = preparedStatement.executeQuery();
@@ -59,8 +61,8 @@ public class DAOComputer {
 		} catch (SQLException e) {
 			LOGGER.info("SQL exception get number computers");
 			return 0;
-		}finally {
-			
+		} finally {
+
 			try {
 				preparedStatement.close();
 				conn.close();
@@ -72,14 +74,13 @@ public class DAOComputer {
 
 	}
 
-	public ArrayList<Computer> getComputers(){
+	public ArrayList<Computer> getComputers() {
 		LOGGER.info("GetComputer DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn=ConnectionMySQL.getConnection();
-
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetComputers);
@@ -118,18 +119,18 @@ public class DAOComputer {
 				LOGGER.info("sqlexception fermetures dao get computers");
 
 			}
-			
+
 		}
 
 	}
 
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset){
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
 		LOGGER.info("GetComputer Limite Offset DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn=ConnectionMySQL.getConnection();
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetComputersLimitOffset);
@@ -171,17 +172,17 @@ public class DAOComputer {
 				LOGGER.info("sqlexception fermetures dao get computers by limit offset");
 
 			}
-			
+
 		}
 	}
-	
-	public ArrayList<Computer> getComputersByName(String name){
+
+	public ArrayList<Computer> getComputersByName(String name) {
 		LOGGER.info("GetComputer get by name DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn=ConnectionMySQL.getConnection();
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetComputersByName);
@@ -222,14 +223,13 @@ public class DAOComputer {
 				LOGGER.info("sqlexception fermetures dao get computers by name");
 
 			}
-			
+
 		}
 	}
-	
 
-	public int addComputer(Computer computer){
+	public int addComputer(Computer computer) {
 		LOGGER.info("AddComputer DAO");
-		Connection conn=ConnectionMySQL.getConnection();
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 			PreparedStatement statement = conn.prepareStatement(sqlInsertComputer);
@@ -258,7 +258,7 @@ public class DAOComputer {
 			LOGGER.info("SQLException addComputer Dao");
 			return -1;
 
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -268,9 +268,9 @@ public class DAOComputer {
 		}
 	}
 
-	public int updateComputer(int id, Computer computer){
+	public int updateComputer(int id, Computer computer) {
 		LOGGER.info("UpdateComputer DAO");
-		Connection conn=ConnectionMySQL.getConnection();
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 
@@ -301,7 +301,7 @@ public class DAOComputer {
 
 			LOGGER.info("SQLException updateComputer Dao");
 			return -1;
-		}finally{
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -311,10 +311,10 @@ public class DAOComputer {
 		}
 	}
 
-	public boolean deleteComputer(int id){
+	public boolean deleteComputer(int id) {
 		LOGGER.info("DeleteComputer DAO id -> " + id);
-		Connection conn=ConnectionMySQL.getConnection();
-		PreparedStatement statement=null;
+		Connection conn = ConnectionMySQL.getConnection();
+		PreparedStatement statement = null;
 		try {
 			statement = conn.prepareStatement(sqlDeleteComputer);
 			statement.setInt(1, id);
@@ -327,7 +327,7 @@ public class DAOComputer {
 
 			LOGGER.info("SQLException deleteComputer Dao");
 			return false;
-		}finally {
+		} finally {
 			try {
 				conn.close();
 				statement.close();
@@ -338,14 +338,14 @@ public class DAOComputer {
 		}
 
 	}
-	
-	public ArrayList<Computer> getComputersByCompanyName(String name){
+
+	public ArrayList<Computer> getComputersByCompanyName(String name) {
 		LOGGER.info("GetComputer get by company name DAO");
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		ComputerMapper ca = ComputerMapper.getInstance();
-		Connection conn=ConnectionMySQL.getConnection();
+		Connection conn = ConnectionMySQL.getConnection();
 
 		try {
 			preparedStatement = conn.prepareStatement(sqlGetComputersByCompanyName);
@@ -386,7 +386,36 @@ public class DAOComputer {
 				LOGGER.info("sqlexception fermetures dao get computers by name");
 
 			}
-			
+
+		}
+	}
+	
+	public boolean deleteAllComputersByCompanyId(int companyId, Connection c) {
+		LOGGER.info("Delete all computers by id company DAO");
+
+		PreparedStatement preparedStatement = null;
+		//Connection conn = ConnectionMySQL.getConnection();
+
+		try {
+			preparedStatement = c.prepareStatement(sqlDeleteAllComputerByCompanyId);
+			preparedStatement.setInt(1, companyId);
+
+			int result = preparedStatement.executeUpdate();
+
+			return result >= 0;
+
+
+		} catch (SQLException e) {
+			LOGGER.info("sqlexception dao get computers by company name");
+			return false;
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e) {
+				LOGGER.info("sqlexception fermetures dao get computers by name");
+
+			}
+
 		}
 	}
 
