@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import dto.ComputerDTO;
@@ -22,12 +21,6 @@ public class ComputerMapper {
 		{ 	cm = new ComputerMapper();	
 		}
 		return cm;
-	}
-	
-	
-	public ComputerDTO mappToComputerDTO(int id, String name, String dateInc, String dateDis, int id_company, String company_name) {
-		
-		return new ComputerDTO(id,name,dateInc,dateDis,id_company, company_name);
 	}
 	
 	public ArrayList<ComputerDTO> mappToComputerDTO(ResultSet rs){

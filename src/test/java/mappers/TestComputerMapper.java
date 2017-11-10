@@ -1,21 +1,17 @@
 package mappers;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDate;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.junit.Test;
 
-import model.Company;
-import model.Computer;
-
 public class TestComputerMapper {
 
-	@Test
-	public void testMappToComputer() {
+	@Test(expected=NullPointerException.class)
+	public void testMappToComputerNull() {
 		ComputerMapper cm = ComputerMapper.getInstance();
-		assertEquals( (new Computer(1,"MonPc", LocalDate.now(), LocalDate.now(), new Company(10, "apple")).toString() ),
-				  cm.mappToComputer(1,"MonPc", LocalDate.now(), LocalDate.now(), 10,"apple").toString() );
+		cm.mappToComputerDTO(null);
 	}
+
 
 }
