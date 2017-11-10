@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -12,11 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dao.DAOComputer;
-import interfaceProjet.Main;
-import model.Computer;
+import dto.ComputerDTO;
 import services.ComputerService;
-import services.ValidatorService;
 
 public class DashboardServlet extends HttpServlet {
 
@@ -38,7 +34,7 @@ public class DashboardServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOGGER.info("doPOst servlet dashboard");
-		ArrayList<Computer> listeComputers = null;
+		ArrayList<ComputerDTO> listeComputers = null;
 		int page = 0, size = 50, intervalMin = 0, intervalMax = 0;
 		int nombreComputers = 0;
 		String actionType = request.getParameter("actionType");
@@ -163,7 +159,7 @@ public class DashboardServlet extends HttpServlet {
 			}
 		}
 
-		ArrayList<Computer> listeComputers;
+		ArrayList<ComputerDTO> listeComputers;
 
 		listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
 				numeroPage * nombreComputersByPage);

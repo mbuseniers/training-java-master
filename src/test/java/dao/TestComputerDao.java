@@ -1,21 +1,19 @@
 package dao;
 
-import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import junit.framework.Assert;
+import exceptions.DAOException;
 
 public class TestComputerDao {
 
     @Test(expected=NullPointerException.class)
-	public void testInsertComputerNull() {
+	public void testInsertComputerNull() throws DAOException {
 		DAOComputer daoC = DAOComputer.getInstance();
 		daoC.addComputer(null);
 	}
 
     @Test(expected=NullPointerException.class)
-	public void testUpdateComputerNull() {
+	public void testUpdateComputerNull() throws DAOException {
 		DAOComputer daoC = DAOComputer.getInstance();
 		daoC.updateComputer(1,null);
 	}

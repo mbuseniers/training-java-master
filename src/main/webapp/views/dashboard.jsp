@@ -89,11 +89,11 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer['id']}"></td>
 							<td><a
-								href="editcomputer?id=${computer['id']}&name=${computer['name']}&introduced=${computer['dateIntroduced']}&discontinued=${computer['dateDiscontinued']}&company=${computer.company.id}"
+								href="editcomputer?id=${computer['id']}&name=${computer['name']}&introduced=${computer['dateIntroduced']}&discontinued=${computer['dateDiscontinued']}&company=${computer.companyId}"
 								onclick=""><c:out value="${computer.name}" /></a></td>
 							<td><c:out value="${computer['dateIntroduced']}" /></td>
 							<td><c:out value="${computer['dateDiscontinued']}" /></td>
-							<td><c:out value="${computer.company.name}" /></td>
+							<td><c:out value="${computer.companyName}" /></td>
 
 						</tr>
 					</c:forEach>

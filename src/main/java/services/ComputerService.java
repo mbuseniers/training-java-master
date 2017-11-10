@@ -4,9 +4,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import dao.DAOComputer;
+import dto.ComputerDTO;
 import exceptions.DAOException;
 import model.Company;
 import model.Computer;
@@ -38,7 +41,6 @@ public class ComputerService {
 			e.printStackTrace();
 			return false;
 		}
-
 	}
 
 	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
@@ -80,8 +82,8 @@ public class ComputerService {
 		return isDeleteOk;
 	}
 
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
-		ArrayList<Computer> listComputers = new ArrayList<>();
+	public ArrayList<ComputerDTO> getComputersByLimitAndOffset(int limit, int offset) {
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 
 		try {
 			listComputers = da.getComputersByLimitAndOffset(limit, offset);
@@ -91,8 +93,8 @@ public class ComputerService {
 		return listComputers;
 	}
 
-	public ArrayList<Computer> getComputersByName(String name) {
-		ArrayList<Computer> listComputers = new ArrayList<>();
+	public ArrayList<ComputerDTO> getComputersByName(String name) {
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 
 		try {
 			listComputers = da.getComputersByName(name);
@@ -102,8 +104,8 @@ public class ComputerService {
 		return listComputers;
 	}
 
-	public ArrayList<Computer> getComputersByCompanyName(String search) {
-		ArrayList<Computer> listComputers = new ArrayList<>();
+	public ArrayList<ComputerDTO> getComputersByCompanyName(String search) {
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		try {
 			listComputers = da.getComputersByCompanyName(search);
 		} catch (DAOException e) {

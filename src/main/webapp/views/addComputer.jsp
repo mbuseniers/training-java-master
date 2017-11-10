@@ -36,7 +36,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">                                <c:out value="${messageErrorName}" />
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">
                                <c:out value="${messageErrorDiscontinued}" />
                                 
                             </div>

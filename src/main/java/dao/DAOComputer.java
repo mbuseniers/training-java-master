@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dto.ComputerDTO;
 import exceptions.DAOException;
 import jdbc.ConnectionMySQL;
 import mappers.ComputerMapper;
@@ -53,22 +54,15 @@ public class DAOComputer {
 		}
 	}
 
-	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) throws DAOException {
+	public ArrayList<ComputerDTO> getComputersByLimitAndOffset(int limit, int offset) throws DAOException {
 		LOGGER.info("GetComputer Limite Offset DAO");
 		ComputerMapper ca = ComputerMapper.getInstance();
-		ArrayList<Computer> listComputers = new ArrayList<>();
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		
 		try(Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersLimitOffset, limit, offset);
 			ResultSet rs=preparedStatement.executeQuery()){
-
-			while (rs.next()) {
-				LocalDate dateInc = checkDateIsNull(rs.getDate(3));
-				LocalDate dateDis = checkDateIsNull(rs.getDate(4));
-
-				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), dateInc, dateDis, rs.getInt(5),
-						rs.getString(7)));
-			}
+			listComputers = ca.mappToComputerDTO(rs);
 		} catch (SQLException e) {
 			LOGGER.error("sqlexception dao get computers by limit offset");
 			throw new DAOException("sqlexception dao get computers by limit offset");
@@ -77,22 +71,16 @@ public class DAOComputer {
 		return listComputers;
 	}
 
-	public ArrayList<Computer> getComputersByName(String name) throws DAOException {
+	public ArrayList<ComputerDTO> getComputersByName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by name DAO");
-		ArrayList<Computer> listComputers = new ArrayList<>();
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		ComputerMapper ca = ComputerMapper.getInstance();
 
 		try(Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByName,name);
 			ResultSet rs=preparedStatement.executeQuery()){
+			listComputers = ca.mappToComputerDTO(rs);
 
-			while (rs.next()) {
-				LocalDate date_inc = checkDateIsNull(rs.getDate(3));
-				LocalDate date_dis = checkDateIsNull(rs.getDate(4));
-
-				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
-						rs.getString(7)));
-			}
 		} catch (SQLException e) {
 			LOGGER.error("sqlexception dao get computers by name");
 			throw new DAOException("sqlexception dao get computers by name");
@@ -146,22 +134,16 @@ public class DAOComputer {
 		}
 	}
 
-	public ArrayList<Computer> getComputersByCompanyName(String name) throws DAOException {
+	public ArrayList<ComputerDTO> getComputersByCompanyName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by company name DAO");
-		ArrayList<Computer> listComputers = new ArrayList<>();
+		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		ComputerMapper ca = ComputerMapper.getInstance();
 
 		try(Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByCompanyName,name);
 			ResultSet rs=preparedStatement.executeQuery()){
+			listComputers = ca.mappToComputerDTO(rs);
 
-			while (rs.next()) {
-				LocalDate date_inc = checkDateIsNull(rs.getDate(3));
-				LocalDate date_dis = checkDateIsNull(rs.getDate(4));
-
-				listComputers.add(ca.mappToComputer(rs.getInt(1), rs.getString(2), date_inc, date_dis, rs.getInt(5),
-						rs.getString(7)));
-			}
 		} catch (SQLException e) {
 			LOGGER.error("sqlexception dao get computers by name");
 			throw new DAOException("sqlexception dao get computers by name");
