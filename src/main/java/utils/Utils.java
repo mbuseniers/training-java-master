@@ -7,16 +7,24 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
 import model.Company;
 import services.CompanyService;
 
+@Component
 public class Utils {
 
+	@Resource(name="companyService")
+	CompanyService cs;// = CompanyService.getInstance();
+	
 	/**
 	 * 	Gere la saisie d'un entier au clavier
 	 * @return int avec pour valeur l'entier saisie, ou 0 en cas de mauvaise saisie
 	 */
-	public static int scanInt() {
+	public int scanInt() {
 
 		try {
 			Scanner sc = new Scanner(System.in);
@@ -32,11 +40,11 @@ public class Utils {
 	 * 	Gere la selection d'une company
 	 * @return int => l'ID de la company choisie
 	 */
-	public static int chooseCompany() {
+	public int chooseCompany() {
 
 		boolean valide = false;
 		int choix=0;
-		CompanyService cs = CompanyService.getInstance();
+		
 		ArrayList<Company> listCompany = cs.getCompanies();
 
 		do {

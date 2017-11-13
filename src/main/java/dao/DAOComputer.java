@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 import dto.ComputerDTO;
 import exceptions.DAOException;
@@ -17,10 +19,10 @@ import jdbc.ConnectionMySQL;
 import mappers.ComputerMapper;
 import model.Computer;
 
+@Repository("daoComputer")
+@Scope("singleton")
 public class DAOComputer {
 
-	Connection conn;
-	static DAOComputer DA = new DAOComputer();
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputer.class);
 
 	private final String sqlGetComputersLimitOffset = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
@@ -31,13 +33,6 @@ public class DAOComputer {
 	private final String sqlUpdateComputer = "UPDATE computer SET name = ? , introduced = ? , discontinued = ? ,  company_id = ? WHERE id = ?";
 	private final String sqlDeleteComputer = "DELETE FROM computer WHERE id = ?";
 	private final String sqlDeleteAllComputerByCompanyId = "DELETE FROM computer WHERE company_id = ? ";
-	
-	private DAOComputer() {
-	}
-
-	public static DAOComputer getInstance() {
-		return DA;
-	}
 
 	public int getNumberComputers() throws DAOException {
 		LOGGER.info("GetNumberComputer DAO");
@@ -153,7 +148,7 @@ public class DAOComputer {
 	
 	public boolean deleteAllComputersByCompanyId(int companyId, Connection c) throws DAOException {
 		LOGGER.info("Delete all computers by id company DAO");
-		try (PreparedStatement preparedStatement=doPreparedStatement(conn, sqlDeleteAllComputerByCompanyId,companyId)){
+		try (PreparedStatement preparedStatement=doPreparedStatement(c, sqlDeleteAllComputerByCompanyId,companyId)){
 			int result = preparedStatement.executeUpdate();
 			return result >= 0;
 		} catch (SQLException e) {

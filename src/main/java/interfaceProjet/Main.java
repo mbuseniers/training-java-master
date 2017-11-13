@@ -3,23 +3,38 @@ package interfaceProjet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import model.Computer;
 import services.CompanyService;
 import services.ComputerService;
 import utils.Utils;
 public class Main {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-
+	@Autowired
+	Utils utils;
 	
 	public static void main(String[] args) throws SQLException {
 
 		System.out.println("Bienvenue sur le projet Computer Database");
+
+	
+		
+		ApplicationContext context = new ClassPathXmlApplicationContext("/Beans.xml");
+	    Computer obj = (Computer) context.getBean("computer");
+	    obj.getId();
+	    
+		
 		boolean continuer = true;
 		ComputerService CptService;
-		CompanyService companyService;
+		CompanyService companyService=null;
 
 	    LOGGER.info("Demarrage main");
 		
@@ -34,19 +49,17 @@ public class Main {
 			System.out.println("6 - Supprimer une company et les computer liés à cette company");
 			System.out.println("7 - Quitter");
 			
-			int choix= Utils.scanInt();
+			int choix=0;//= utils.scanInt();
 			
 			
 			switch(choix) {
 			
 			case 1 : 
-				
-				
+
 				break;
 				
 			case 2 : 
-				
-				
+
 				break;
 				
 			case 3 : 
@@ -58,17 +71,16 @@ public class Main {
 				break;
 				
 			case 5 :
-				CompanyService cs = CompanyService.getInstance();
 				
 				System.out.println("Liste des Company : ");
 
-				cs.getCompanies().stream().forEach(System.out::println);
+				companyService.getCompanies().stream().forEach(System.out::println);
 				break;
 				
 			case 6 : 
 				Scanner sc = new Scanner(System.in);
-				companyService = CompanyService.getInstance();
-				CptService = ComputerService.getInstance();
+				//companyService; // = CompanyService.getInstance();
+				//CptService = ComputerService.getInstance();
 				companyService.getCompanies().stream().forEach(System.out::println);
 				
 				System.out.println("Saisir le jour : ");

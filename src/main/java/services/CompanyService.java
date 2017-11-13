@@ -2,35 +2,37 @@ package services;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 import dao.DAOCompany;
 import model.Company;
 
+@Service("companyService")
+@Scope("singleton")
 public class CompanyService {
 
-	private static CompanyService cs;
-	DAOCompany da;
+	@Resource(name="daoCompany")
+	private DAOCompany daoCompany;
 
-	private CompanyService() {
-		da = DAOCompany.getInstance();
+	public CompanyService(DAOCompany daoCompany) {
+		super();
+		this.daoCompany = daoCompany;
 	}
-
-	public static CompanyService getInstance() {
-		if (cs == null) {
-			cs = new CompanyService();
-		}
-		return cs;
-	}
+	
 
 	public ArrayList<Company> getCompanies() {
-		return da.getCompanies();
+		return daoCompany.getCompanies();
 	}
-	
+
 	public boolean checkIdCompany(int id) {
-		return da.checkIdCompany(id);
+		return daoCompany.checkIdCompany(id);
 	}
-	
+
 	public boolean deleteCompanyById(int id) {
-		return da.deleteCompanyById(id);
+		return daoCompany.deleteCompanyById(id);
 	}
 
 }

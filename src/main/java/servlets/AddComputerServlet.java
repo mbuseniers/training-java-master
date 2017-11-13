@@ -7,22 +7,36 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import configuration.SpringConfiguration;
 import model.Company;
 import services.CompanyService;
 import services.ComputerService;
 import services.ValidatorService;
 
 public class AddComputerServlet extends HttpServlet {
-
-	private CompanyService companyService = CompanyService.getInstance();
-	private ComputerService computerService = ComputerService.getInstance();
+	
+	@Autowired
+	private CompanyService companyService; 
+	
+	@Autowired
+	private ComputerService computerService; 
 	private ValidatorService validatorService = ValidatorService.getInstance();
 
+	public void init() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+        context.getAutowireCapableBeanFactory().autowireBean(this);
+    }
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ArrayList<Company> listeCompanies;

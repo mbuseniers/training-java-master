@@ -6,8 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 import exceptions.DAOException;
 import interfaceProjet.Main;
@@ -15,22 +19,27 @@ import jdbc.ConnectionMySQL;
 import mappers.CompanyMapper;
 import model.Company;
 
+@Repository("daoCompany")
+@Scope("singleton")
 public class DAOCompany {
 
-	Connection conn;
-	static DAOCompany DA = new DAOCompany();
+	
+	
+
+	@Resource(name="daoComputer")
+	private DAOComputer daoComputer;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompany.class);
 
 	private String sqlGetCompanies = "SELECT * FROM company";
 	private String sqlCheckIdCompany = "SELECT * FROM company WHERE ? = company.id";
 	private String sqlDeleteCompanyById = "DELETE FROM company WHERE id = ? ";
 
-	private DAOCompany() {
+	
+	public DAOCompany(DAOComputer daoComputer) {
+		this.daoComputer = daoComputer;
 	}
 
-	public static DAOCompany getInstance() {
-		return DA;
-	}
 
 	public ArrayList<Company> getCompanies() {
 		LOGGER.info("GetCompanies DAO");
@@ -73,7 +82,7 @@ public class DAOCompany {
 
 	public boolean deleteCompanyById(int id){
 		LOGGER.info("delete company DAO");
-		DAOComputer daoComputer = DAOComputer.getInstance();
+		
 
 		try (Connection conn = ConnectionMySQL.getConnection()) {
 			conn.setAutoCommit(false);

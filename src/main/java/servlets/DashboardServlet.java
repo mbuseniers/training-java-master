@@ -10,17 +10,33 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import configuration.SpringConfiguration;
 import dto.ComputerDTO;
 import services.ComputerService;
+
+
 
 public class DashboardServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private ComputerService computerService = ComputerService.getInstance();
+	
+	@Autowired
+	private ComputerService computerService; 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardServlet.class);
 
+
+	
+	public DashboardServlet() {};
+	
+	public void init() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+        context.getAutowireCapableBeanFactory().autowireBean(this);
+    }
+		
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
@@ -31,6 +47,7 @@ public class DashboardServlet extends HttpServlet {
 
 		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 	}
+	
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOGGER.info("doPOst servlet dashboard");

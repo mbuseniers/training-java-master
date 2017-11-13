@@ -5,8 +5,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import dao.DAOComputer;
 import dto.ComputerDTO;
@@ -14,29 +18,34 @@ import exceptions.DAOException;
 import model.Company;
 import model.Computer;
 
+@Service("computerService")
+@Scope("singleton")
 public class ComputerService {
 
-	private static ComputerService cs;
-	private DAOComputer da;
+	@Resource(name="daoComputer")
+	private DAOComputer daoComputer;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 
-	private ComputerService() {
-		da = DAOComputer.getInstance();
+	public ComputerService(DAOComputer da) {
+		this.daoComputer = da;
 	}
 
-	public static ComputerService getInstance() {
-		if (cs == null) {
-			cs = new ComputerService();
-		}
-		return cs;
-	}
+	/*
+	 * private ComputerService() { da = DAOComputer.getInstance(); }
+	 */
+	/*
+	 * public static ComputerService getInstance() { if (cs == null) { cs = new
+	 * ComputerService(); } return cs; }
+	 */
+	// private static ComputerService cs;
 
 	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
 
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
 		try {
-			return da.addComputer(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
+			return daoComputer.addComputer(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
 		} catch (DAOException e) {
 			e.printStackTrace();
 			return false;
@@ -48,7 +57,7 @@ public class ComputerService {
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
 		try {
-			return da.updateComputer(id,
+			return daoComputer.updateComputer(id,
 					new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id))) == 1;
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -59,7 +68,7 @@ public class ComputerService {
 
 	public int getNumberComputers() {
 		try {
-			return da.getNumberComputers();
+			return daoComputer.getNumberComputers();
 		} catch (DAOException e) {
 			e.printStackTrace();
 			return -1;
@@ -72,7 +81,7 @@ public class ComputerService {
 
 		for (int i = 0; i < deleteSelected.length; i++) {
 			try {
-				isDeleteOk = da.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
+				isDeleteOk = daoComputer.deleteComputer(Integer.valueOf(deleteSelected[i])) && isDeleteOk;
 			} catch (DAOException e) {
 				e.printStackTrace();
 				return false;
@@ -86,7 +95,7 @@ public class ComputerService {
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 
 		try {
-			listComputers = da.getComputersByLimitAndOffset(limit, offset);
+			listComputers = daoComputer.getComputersByLimitAndOffset(limit, offset);
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +106,7 @@ public class ComputerService {
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 
 		try {
-			listComputers = da.getComputersByName(name);
+			listComputers = daoComputer.getComputersByName(name);
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
@@ -107,7 +116,7 @@ public class ComputerService {
 	public ArrayList<ComputerDTO> getComputersByCompanyName(String search) {
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		try {
-			listComputers = da.getComputersByCompanyName(search);
+			listComputers = daoComputer.getComputersByCompanyName(search);
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
