@@ -31,15 +31,6 @@ public class ComputerService {
 		this.daoComputer = da;
 	}
 
-	/*
-	 * private ComputerService() { da = DAOComputer.getInstance(); }
-	 */
-	/*
-	 * public static ComputerService getInstance() { if (cs == null) { cs = new
-	 * ComputerService(); } return cs; }
-	 */
-	// private static ComputerService cs;
-
 	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
 
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);

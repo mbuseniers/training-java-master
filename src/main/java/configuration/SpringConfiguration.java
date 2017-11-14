@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan({"services",
 				"dao", 
-				"servlets"})
+				"servlets",
+				"mappers"})
 public class SpringConfiguration {
 
 }

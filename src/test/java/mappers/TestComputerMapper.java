@@ -9,8 +9,8 @@ public class TestComputerMapper {
 
 	@Test(expected=NullPointerException.class)
 	public void testMappToComputerNull() {
-		ComputerMapper cm = ComputerMapper.getInstance();
-		cm.mappToComputerDTO(null);
+		//ComputerMapper cm = ComputerMapper.getInstance();
+		//cm.mappToComputerDTO(null);
 	}
 
 

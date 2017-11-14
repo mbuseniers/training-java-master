@@ -18,7 +18,6 @@ public class CompanyService {
 	private DAOCompany daoCompany;
 
 	public CompanyService(DAOCompany daoCompany) {
-		super();
 		this.daoCompany = daoCompany;
 	}
 	

@@ -27,10 +27,6 @@ public class DashboardServlet extends HttpServlet {
 	@Autowired
 	private ComputerService computerService; 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardServlet.class);
-
-
-	
-	public DashboardServlet() {};
 	
 	public void init() {
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);

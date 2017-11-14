@@ -24,19 +24,20 @@ import services.ComputerService;
 import services.ValidatorService;
 
 public class AddComputerServlet extends HttpServlet {
-	
+
 	@Autowired
-	private CompanyService companyService; 
-	
+	private CompanyService companyService;
+
 	@Autowired
-	private ComputerService computerService; 
-	private ValidatorService validatorService = ValidatorService.getInstance();
+	private ComputerService computerService;
+	@Autowired
+	private ValidatorService validatorService;
 
 	public void init() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-        context.getAutowireCapableBeanFactory().autowireBean(this);
-    }
-	
+		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		context.getAutowireCapableBeanFactory().autowireBean(this);
+	}
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ArrayList<Company> listeCompanies;

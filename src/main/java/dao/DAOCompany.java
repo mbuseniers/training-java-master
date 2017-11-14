@@ -10,11 +10,11 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import exceptions.DAOException;
-import interfaceProjet.Main;
 import jdbc.ConnectionMySQL;
 import mappers.CompanyMapper;
 import model.Company;
@@ -23,27 +23,24 @@ import model.Company;
 @Scope("singleton")
 public class DAOCompany {
 
-	
-	
-
-	@Resource(name="daoComputer")
+	@Resource(name = "daoComputer")
 	private DAOComputer daoComputer;
 	
+	private CompanyMapper cm;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompany.class);
 
 	private String sqlGetCompanies = "SELECT * FROM company";
 	private String sqlCheckIdCompany = "SELECT * FROM company WHERE ? = company.id";
 	private String sqlDeleteCompanyById = "DELETE FROM company WHERE id = ? ";
 
-	
-	public DAOCompany(DAOComputer daoComputer) {
+	public DAOCompany(DAOComputer daoComputer, CompanyMapper cm) {
 		this.daoComputer = daoComputer;
+		this.cm = cm;
 	}
-
 
 	public ArrayList<Company> getCompanies() {
 		LOGGER.info("GetCompanies DAO");
-		CompanyMapper cm = CompanyMapper.getInstance();
 		ArrayList<Company> listCompanies = new ArrayList<>();
 
 		try (Connection conn = ConnectionMySQL.getConnection();
@@ -80,9 +77,8 @@ public class DAOCompany {
 		}
 	}
 
-	public boolean deleteCompanyById(int id){
+	public boolean deleteCompanyById(int id) {
 		LOGGER.info("delete company DAO");
-		
 
 		try (Connection conn = ConnectionMySQL.getConnection()) {
 			conn.setAutoCommit(false);
@@ -93,10 +89,10 @@ public class DAOCompany {
 				e1.printStackTrace();
 				return false;
 			}
-			
+
 			if (deleteComputersOk) {
 
-				try (PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlDeleteCompanyById, id)){
+				try (PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlDeleteCompanyById, id)) {
 					int result = ps.executeUpdate();
 					conn.setAutoCommit(true);
 					return result == 1;
@@ -104,13 +100,13 @@ public class DAOCompany {
 					LOGGER.error("Check ID Company DAO Exception");
 					conn.rollback();
 					return false;
-				} 
+				}
 			} else {
 				conn.rollback();
 				return false;
 			}
 
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			LOGGER.error("sql exception deletecomputers");
 			return false;
 		}

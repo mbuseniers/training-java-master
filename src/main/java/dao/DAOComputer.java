@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,8 @@ public class DAOComputer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputer.class);
 
+	private ComputerMapper ca;
+
 	private final String sqlGetComputersLimitOffset = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
 	private final String sqlGetComputersByName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE '%' ? '%'";
 	private final String sqlGetComputersByCompanyName = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE company.name LIKE '%' ? '%'";
@@ -34,6 +37,10 @@ public class DAOComputer {
 	private final String sqlDeleteComputer = "DELETE FROM computer WHERE id = ?";
 	private final String sqlDeleteAllComputerByCompanyId = "DELETE FROM computer WHERE company_id = ? ";
 
+	public DAOComputer(ComputerMapper ca) {
+		this.ca = ca;
+	}
+	
 	public int getNumberComputers() throws DAOException {
 		LOGGER.info("GetNumberComputer DAO");
 		try (Connection conn = ConnectionMySQL.getConnection();
@@ -51,7 +58,6 @@ public class DAOComputer {
 
 	public ArrayList<ComputerDTO> getComputersByLimitAndOffset(int limit, int offset) throws DAOException {
 		LOGGER.info("GetComputer Limite Offset DAO");
-		ComputerMapper ca = ComputerMapper.getInstance();
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		
 		try(Connection conn = ConnectionMySQL.getConnection();
@@ -69,7 +75,6 @@ public class DAOComputer {
 	public ArrayList<ComputerDTO> getComputersByName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by name DAO");
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
-		ComputerMapper ca = ComputerMapper.getInstance();
 
 		try(Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByName,name);
@@ -132,7 +137,6 @@ public class DAOComputer {
 	public ArrayList<ComputerDTO> getComputersByCompanyName(String name) throws DAOException {
 		LOGGER.info("GetComputer get by company name DAO");
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
-		ComputerMapper ca = ComputerMapper.getInstance();
 
 		try(Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement preparedStatement=doPreparedStatement(conn, sqlGetComputersByCompanyName,name);

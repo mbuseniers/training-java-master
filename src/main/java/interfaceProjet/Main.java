@@ -49,8 +49,7 @@ public class Main {
 			System.out.println("6 - Supprimer une company et les computer liés à cette company");
 			System.out.println("7 - Quitter");
 			
-			int choix=0;//= utils.scanInt();
-			
+			int choix=0;
 			
 			switch(choix) {
 			

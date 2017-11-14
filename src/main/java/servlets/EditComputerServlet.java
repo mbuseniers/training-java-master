@@ -27,16 +27,18 @@ public class EditComputerServlet extends HttpServlet {
 
 	@Autowired
 	private ComputerService computerService;
-	
+
 	@Autowired
 	private CompanyService companyService;
-	private ValidatorService validatorService = ValidatorService.getInstance();
+	
+	@Autowired
+	private ValidatorService validatorService;
 
 	public void init() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-        context.getAutowireCapableBeanFactory().autowireBean(this);
-    }
-	
+		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		context.getAutowireCapableBeanFactory().autowireBean(this);
+	}
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ArrayList<Company> listeCompanies;

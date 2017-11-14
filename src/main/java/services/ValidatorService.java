@@ -4,20 +4,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class ValidatorService {
-
-	private static ValidatorService validatorService;
-	
-	private ValidatorService() {
-	}
-
-	public static ValidatorService getInstance() {
-		if (validatorService == null) {
-			validatorService = new ValidatorService();
-		}
-		return validatorService;
-	}
 	
 	public boolean checkName(String name) {
 		return !name.equals("");

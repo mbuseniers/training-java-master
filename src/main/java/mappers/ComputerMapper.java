@@ -7,21 +7,12 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Component;
+
 import dto.ComputerDTO;
 
+@Component
 public class ComputerMapper {
-
-	private static ComputerMapper cm ;
-	
-	private ComputerMapper() {
-	}
-	
-	public static ComputerMapper getInstance() {
-		if (cm == null)
-		{ 	cm = new ComputerMapper();	
-		}
-		return cm;
-	}
 	
 	public ArrayList<ComputerDTO> mappToComputerDTO(ResultSet rs){
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
