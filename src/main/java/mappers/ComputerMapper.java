@@ -31,7 +31,6 @@ public class ComputerMapper {
 	public ComputerDTO mappToComputerDTO(ResultSet rs) {
 		ComputerDTO cpDTO=null;
 		try {
-			rs.next();
 			cpDTO = new ComputerDTO(rs.getInt(1), rs.getString(2), convertDateToString(rs.getDate(3)), convertDateToString(rs.getDate(4)), rs.getInt(5),rs.getString(7));
 			
 		} catch (SQLException e) {

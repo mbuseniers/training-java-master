@@ -16,15 +16,5 @@ import com.zaxxer.hikari.HikariDataSource;
 				"mappers",
 				"jdbc"})
 public class SpringConfiguration {
-
-	@Autowired
-	private HikariDataSource ds;
-	
-	@Bean
-    public PlatformTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(ds);
-        return transactionManager;
-    }
 	
 }

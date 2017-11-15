@@ -53,7 +53,6 @@ public class DAOComputer {
 	public ArrayList<ComputerDTO> getComputersByLimitAndOffset(int limit, int offset) throws DAOException {
 		LOGGER.info("GetComputer Limite Offset DAO");
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
-
 		listComputers = (ArrayList<ComputerDTO>) jdbcTemplate.query(sqlGetComputersLimitOffset,
 				new Object[] { limit, offset }, new RowMapper<ComputerDTO>() {
 					public ComputerDTO mapRow(ResultSet rs, int arg1) throws SQLException {

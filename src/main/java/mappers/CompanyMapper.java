@@ -17,7 +17,6 @@ public class CompanyMapper {
 	public Company mappToCompany(ResultSet rs) {
 		Company company=null;
 		try {
-			rs.next();
 			company = new Company(rs.getInt(1),rs.getString(2));
 		} catch (SQLException e) {
 			e.printStackTrace();

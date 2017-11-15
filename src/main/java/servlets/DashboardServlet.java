@@ -176,10 +176,10 @@ public class DashboardServlet extends HttpServlet {
 		}
 
 		ArrayList<ComputerDTO> listeComputers;
-
+		
 		listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
 				numeroPage * nombreComputersByPage);
-
+		
 		request.setAttribute("liste", listeComputers);
 		request.setAttribute("page", numeroPage);
 		request.setAttribute("size", nombreComputersByPage);
