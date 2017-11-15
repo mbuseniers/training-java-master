@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>DashboardServlet</servlet-name>
 		<servlet-class>servlets.DashboardServlet</servlet-class>
 	</servlet>
@@ -11,7 +11,7 @@
 	<servlet-mapping>
 		<servlet-name>DashboardServlet</servlet-name>
 		<url-pattern>/dashboard</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> 
 
 	<servlet>
 		<servlet-name>AddComputerServlet</servlet-name>
@@ -31,6 +31,6 @@
 	<servlet-mapping>
 		<servlet-name>EditComputerServlet</servlet-name>
 		<url-pattern>/editcomputer</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 
 </web-app>

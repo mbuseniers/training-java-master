@@ -14,7 +14,7 @@ import dto.ComputerDTO;
 @Component
 public class ComputerMapper {
 	
-	public ArrayList<ComputerDTO> mappToComputerDTO(ResultSet rs){
+	public ArrayList<ComputerDTO> mappToListComputerDTO(ResultSet rs){
 		ArrayList<ComputerDTO> listComputers = new ArrayList<>();
 		
 		try {
@@ -26,6 +26,18 @@ public class ComputerMapper {
 		}
 		
 		return listComputers;
+	}
+	
+	public ComputerDTO mappToComputerDTO(ResultSet rs) {
+		ComputerDTO cpDTO=null;
+		try {
+			rs.next();
+			cpDTO = new ComputerDTO(rs.getInt(1), rs.getString(2), convertDateToString(rs.getDate(3)), convertDateToString(rs.getDate(4)), rs.getInt(5),rs.getString(7));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cpDTO;
 	}
 	
 	public String convertDateToString(Date date) {

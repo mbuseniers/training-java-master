@@ -12,7 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import exceptions.DAOException;
 import jdbc.ConnectionMySQL;
@@ -25,9 +30,16 @@ public class DAOCompany {
 
 	@Resource(name = "daoComputer")
 	private DAOComputer daoComputer;
-	
 	private CompanyMapper cm;
-
+	@Autowired
+	private ConnectionMySQL connectionMySQL;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private PlatformTransactionManager ptm;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompany.class);
 
 	private String sqlGetCompanies = "SELECT * FROM company";
@@ -43,73 +55,37 @@ public class DAOCompany {
 		LOGGER.info("GetCompanies DAO");
 		ArrayList<Company> listCompanies = new ArrayList<>();
 
-		try (Connection conn = ConnectionMySQL.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sqlGetCompanies);
-				ResultSet rs = ps.executeQuery()) {
-
-			while (rs.next()) {
-				listCompanies.add(cm.mappToCompany(rs.getInt(1), rs.getString(2)));
-
-			}
-		} catch (SQLException e) {
-			LOGGER.error("GetCompanies DAO Exception");
-			return null;
-		}
+		listCompanies = (ArrayList<Company>) jdbcTemplate.query(sqlGetCompanies,
+				new RowMapper<Company>() {
+					public Company mapRow(ResultSet rs, int arg1) throws SQLException {
+						return cm.mappToCompany(rs);
+					}
+				});
+		
 		return listCompanies;
 	}
 
 	public boolean checkIdCompany(int id) {
 		LOGGER.info("check Id company DAO");
-		try (Connection conn = ConnectionMySQL.getConnection();
-				PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlCheckIdCompany, id);
-				ResultSet rs = ps.executeQuery()) {
-
-			rs.next();
-			try {
-				rs.getInt(1);
-				return true;
-			} catch (NullPointerException e) {
-				return false;
-			}
-		} catch (SQLException e) {
-			LOGGER.error("Check ID Company DAO Exception");
-			return false;
-		}
+		return jdbcTemplate.update(sqlCheckIdCompany, id) == 1 ;
 	}
 
 	public boolean deleteCompanyById(int id) {
 		LOGGER.info("delete company DAO");
 
-		try (Connection conn = ConnectionMySQL.getConnection()) {
-			conn.setAutoCommit(false);
-			boolean deleteComputersOk;
-			try {
-				deleteComputersOk = daoComputer.deleteAllComputersByCompanyId(id, conn);
-			} catch (DAOException e1) {
-				e1.printStackTrace();
-				return false;
-			}
-
-			if (deleteComputersOk) {
-
-				try (PreparedStatement ps = DAOComputer.doPreparedStatement(conn, sqlDeleteCompanyById, id)) {
-					int result = ps.executeUpdate();
-					conn.setAutoCommit(true);
-					return result == 1;
-				} catch (SQLException e) {
-					LOGGER.error("Check ID Company DAO Exception");
-					conn.rollback();
-					return false;
-				}
-			} else {
-				conn.rollback();
-				return false;
-			}
-
-		} catch (SQLException e) {
-			LOGGER.error("sql exception deletecomputers");
-			return false;
+		TransactionStatus ts = ptm.getTransaction(new DefaultTransactionDefinition());
+		boolean deleteComputersOk=false;
+		
+		try {
+			deleteComputersOk = daoComputer.deleteAllComputersByCompanyId(id);
+			jdbcTemplate.update(sqlDeleteCompanyById, id);
+			ptm.commit(ts);
+			deleteComputersOk=true;
+		}catch(Exception e) {
+			LOGGER.error("delete company DAO EXCEPTION");
+			ptm.rollback(ts);
 		}
+		return deleteComputersOk;
 
 	}
 }

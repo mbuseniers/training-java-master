@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Controller;
 
 import configuration.SpringConfiguration;
 import model.Company;
@@ -23,6 +26,8 @@ import services.CompanyService;
 import services.ComputerService;
 import services.ValidatorService;
 
+@Controller
+@WebServlet("/editcomputer")
 public class EditComputerServlet extends HttpServlet {
 
 	@Autowired
