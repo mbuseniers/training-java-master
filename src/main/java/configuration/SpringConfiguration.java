@@ -12,7 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan({"services",
 				"dao", 
-				"servlets",
+				"controllers",
 				"mappers",
 				"jdbc"})
 public class SpringConfiguration {

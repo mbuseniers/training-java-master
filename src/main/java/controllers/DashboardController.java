@@ -1,13 +1,7 @@
-package servlets;
+package controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,104 +9,106 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import configuration.SpringConfiguration;
 import dto.ComputerDTO;
 import services.ComputerService;
 
-
 @Controller
-@WebServlet("/dashboard")
-public class DashboardServlet extends HttpServlet {
+@RequestMapping("/dashboard")
+public class DashboardController {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Autowired
-	private ComputerService computerService; 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardServlet.class);
-	
+	private ComputerService computerService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
+
 	public void init() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-        context.getAutowireCapableBeanFactory().autowireBean(this);
-    }
-		
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		response.setContentType("text/html");
-
-		LOGGER.info("doGet servlet dashboard");
-
-		doPagination(request, response);
-
-		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		context.getAutowireCapableBeanFactory().autowireBean(this);
 	}
-	
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@GetMapping
+	protected ModelAndView doGet(@RequestParam Map<String, String> parameters) {
+		LOGGER.info("doGet servlet dashboard");
+		ModelAndView modelAndView = new ModelAndView("/views/dashboard.jsp");
+		doPagination(modelAndView, parameters);
+		return modelAndView;
+	}
+
+	@PostMapping
+	public ModelAndView doPost(@RequestParam Map<String, String> parameters) {
 		LOGGER.info("doPOst servlet dashboard");
+		ModelAndView modelAndView = new ModelAndView("/views/dashboard.jsp");
 		ArrayList<ComputerDTO> listeComputers = null;
 		int page = 0, size = 50, intervalMin = 0, intervalMax = 0;
 		int nombreComputers = 0;
-		String actionType = request.getParameter("actionType");
+		String actionType = parameters.get("actionType");
 
 		if (actionType.equals("DELETE")) {
 
 			boolean isDeleteOk = false;
-				isDeleteOk = computerService.deleteComputer(request.getParameter("selection"));
-			
+			isDeleteOk = computerService.deleteComputer(parameters.get("selection"));
+
 			if (isDeleteOk) {
-				request.setAttribute("messageDelete", "Supression OK");
+				modelAndView.addObject("messageDelete", "Supression OK");
 			} else {
-				request.setAttribute("messageDelete", "Probleme de suppression");
+				modelAndView.addObject("messageDelete", "Probleme de suppression");
 			}
 
-			intervalMin=0;
-			intervalMax=2;
+			intervalMin = 0;
+			intervalMax = 2;
 			nombreComputers = computerService.getNumberComputers();
 			listeComputers = computerService.getComputersByLimitAndOffset(size, page);
 
 		} else if (actionType.equals("SEARCH")) {
 			LOGGER.info("doPOst SEARCH");
-			String search = request.getParameter("search");
+			String search = parameters.get("search");
 			if (!search.equals("")) {
 
-				if (request.getParameter("searchBy").equals("Filter by name")) {
+				if (parameters.get("searchBy").equals("Filter by name")) {
 					LOGGER.info("SEARCH by name");
 					listeComputers = computerService.getComputersByName(search);
-				} else if (request.getParameter("searchBy").equals("Filter by company")) {
+				} else if (parameters.get("searchBy").equals("Filter by company")) {
 					LOGGER.info("SEARCH by company");
 					listeComputers = computerService.getComputersByCompanyName(search);
 				}
-				
-				size=100;
-				intervalMin=0;
-				intervalMax=0;
-				
+
+				size = 100;
+				intervalMin = 0;
+				intervalMax = 0;
+
 				nombreComputers = listeComputers.size();
 
 			} else {
-				request.setAttribute("messageErreurSearch", "La recherche ne peut être nulle");
+				modelAndView.addObject("messageErreurSearch", "La recherche ne peut être nulle");
 				listeComputers = null;
 			}
 
 		}
 
-		request.setAttribute("liste", listeComputers);
-		request.setAttribute("page", page);
-		request.setAttribute("size", size);
-		request.setAttribute("intervalMin", intervalMin);
-		request.setAttribute("intervalMax", intervalMax);
-		request.setAttribute("nombreComputers", nombreComputers);
+		modelAndView.addObject("liste", listeComputers);
+		modelAndView.addObject("page", page);
+		modelAndView.addObject("size", size);
+		modelAndView.addObject("intervalMin", intervalMin);
+		modelAndView.addObject("intervalMax", intervalMax);
+		modelAndView.addObject("nombreComputers", nombreComputers);
 
-		this.getServletContext().getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+		return modelAndView;
 
 	}
 
-	public void doPagination(HttpServletRequest request, HttpServletResponse response) {
+	public void doPagination(ModelAndView modelAndView, Map<String, String> parameters) {
 		int numeroPage = 0, nombreComputersByPage = 0, intervalPageMin = 0, intervalPageMax = 2, nombrePageMax = 0;
 		int nombreComputers = computerService.getNumberComputers();
 
-		if (request.getParameter("changeSize") == null && request.getParameter("changePage") == null) {
+		if (parameters.get("changeSize") == null && parameters.get("changePage") == null) {
 			numeroPage = 0;
 			nombreComputersByPage = 50;
 
@@ -125,8 +121,8 @@ public class DashboardServlet extends HttpServlet {
 				intervalPageMax = nombrePageMax;
 			}
 			intervalPageMin = 0;
-		} else if (request.getParameter("changeSize") != null) {
-			nombreComputersByPage = Integer.valueOf(request.getParameter("size"));
+		} else if (parameters.get("changeSize") != null) {
+			nombreComputersByPage = Integer.valueOf(parameters.get("size"));
 			numeroPage = 0;
 
 			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
@@ -143,9 +139,9 @@ public class DashboardServlet extends HttpServlet {
 				intervalPageMax = nombrePageMax;
 			}
 
-		} else if (request.getParameter("changePage") != null) {
-			numeroPage = Integer.valueOf(request.getParameter("page"));
-			nombreComputersByPage = Integer.valueOf(request.getParameter("size"));
+		} else if (parameters.get("changePage") != null) {
+			numeroPage = Integer.valueOf(parameters.get("page"));
+			nombreComputersByPage = Integer.valueOf(parameters.get("size"));
 
 			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
 				nombreComputersByPage = 50;
@@ -176,16 +172,16 @@ public class DashboardServlet extends HttpServlet {
 		}
 
 		ArrayList<ComputerDTO> listeComputers;
-		
+
 		listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
 				numeroPage * nombreComputersByPage);
-		
-		request.setAttribute("liste", listeComputers);
-		request.setAttribute("page", numeroPage);
-		request.setAttribute("size", nombreComputersByPage);
-		request.setAttribute("intervalMin", intervalPageMin);
-		request.setAttribute("intervalMax", intervalPageMax);
-		request.setAttribute("nombreComputers", nombreComputers);
+
+		modelAndView.addObject("liste", listeComputers);
+		modelAndView.addObject("page", numeroPage);
+		modelAndView.addObject("size", nombreComputersByPage);
+		modelAndView.addObject("intervalMin", intervalPageMin);
+		modelAndView.addObject("intervalMax", intervalPageMax);
+		modelAndView.addObject("nombreComputers", nombreComputers);
 	}
 
 }
