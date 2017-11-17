@@ -1,17 +1,24 @@
 package dto;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 
-import model.Company;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ComputerDTO {
 
 	private int id;
+	@NotNull
 	private String name;
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private String dateIntroduced;
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private String dateDiscontinued;
 	private int companyId;
 	private String companyName;
+	
+	public ComputerDTO(){}
 	
 	public ComputerDTO(int id, String name, String dateIntroduced, String dateDiscontinued, int companyId,
 			String companyName) {

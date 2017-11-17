@@ -34,11 +34,6 @@ public class EditComputerController extends HttpServlet {
 	@Autowired
 	private ValidatorService validatorService;
 
-	public void init() {
-		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-		context.getAutowireCapableBeanFactory().autowireBean(this);
-	}
-
 	@GetMapping
 	public ModelAndView doGet(@RequestParam Map<String, String> parameters) {
 		ModelAndView modelAndView = new ModelAndView("/views/editComputer.jsp");

@@ -1,16 +1,16 @@
 package mappers;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestComputerMapper {
 
+	@Autowired
+	ComputerMapper cm;
+	
 	@Test(expected=NullPointerException.class)
 	public void testMappToComputerNull() {
-		//ComputerMapper cm = ComputerMapper.getInstance();
-		//cm.mappToComputerDTO(null);
+		cm.mappToComputerDTO(null);
 	}
 
 

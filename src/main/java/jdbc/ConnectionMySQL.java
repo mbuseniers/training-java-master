@@ -13,11 +13,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
+@EnableWebMvc
 @PropertySource("classpath:spring.properties")
 public class ConnectionMySQL {
 

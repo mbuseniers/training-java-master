@@ -8,6 +8,8 @@
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -22,22 +24,28 @@
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
                     	<h2><c:out value="${messageAjout}" /></h2>
-                    <form action="addcomputer" method="POST">
+                    <form:form action="addcomputer" method="POST" modelAttribute="computerDTO">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
+                                <!--<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">-->
+                                <form:input path="name" placeholder="Computer name"/>
+                                <form:errors path="name" />
                                 <c:out value="${messageErrorName}" />
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="yyyy-MM-dd">
+                                <!-- <input type="date" class="form-control" id="introduced" name="introduced" placeholder="yyyy-MM-dd"> -->
+                                <form:input path="dateIntroduced" placeholder="yyyy-MM-dd"/>
+                                <form:errors path="dateIntroduced" />
                                 <c:out value="${messageErrorIntroduced}" />
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">
-                               <c:out value="${messageErrorDiscontinued}" />
+                                <!--  <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">-->
+                                <form:input path="dateDiscontinued" placeholder="yyyy-MM-dd"/>
+                                <form:errors path="dateDiscontinued" />
+                                <c:out value="${messageErrorDiscontinued}" />
                                 
                             </div>
                             <div class="form-group">
@@ -56,7 +64,7 @@
                             or
                             <a href="dashboard" class="btn btn-default">Cancel</a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>

@@ -2,20 +2,23 @@ package dao;
 
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import exceptions.DAOException;
 
 public class TestComputerDao {
 
+	@Autowired
+	DAOComputer daoC;
+	
     @Test(expected=NullPointerException.class)
 	public void testInsertComputerNull() throws DAOException {
-		//DAOComputer daoC = DAOComputer.getInstance();
-		//daoC.addComputer(null);
+		daoC.addComputer(null);
 	}
 
     @Test(expected=NullPointerException.class)
 	public void testUpdateComputerNull() throws DAOException {
-		//DAOComputer daoC = DAOComputer.getInstance();
-		//daoC.updateComputer(1,null);
+		daoC.updateComputer(1,null);
 	}
     
 }

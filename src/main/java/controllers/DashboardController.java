@@ -6,20 +6,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import configuration.SpringConfiguration;
 import dto.ComputerDTO;
 import services.ComputerService;
 
 @Controller
+@EnableWebMvc
 @RequestMapping("/dashboard")
 public class DashboardController {
 
@@ -28,11 +27,6 @@ public class DashboardController {
 	@Autowired
 	private ComputerService computerService;
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
-
-	public void init() {
-		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-		context.getAutowireCapableBeanFactory().autowireBean(this);
-	}
 
 	@GetMapping
 	protected ModelAndView doGet(@RequestParam Map<String, String> parameters) {
