@@ -10,6 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="springForm"%>
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -28,21 +29,18 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName"><spring:message code="label.computerName"/></label>
-                                <!--<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">-->
                                 <form:input class="form-control" path="name" placeholder="Computer name"/>
                                 <form:errors path="name" />
                                 <c:out value="${messageErrorName}" />
                             </div>
                             <div class="form-group">
                                 <label for="introduced"><spring:message code="label.dateIntroduced"/></label>
-                                <!-- <input type="date" class="form-control" id="introduced" name="introduced" placeholder="yyyy-MM-dd"> -->
                                 <form:input class="form-control" path="dateIntroduced" placeholder="yyyy-MM-dd"/>
                                 <form:errors path="dateIntroduced" />
                                 <c:out value="${messageErrorIntroduced}" />
                             </div>
                             <div class="form-group">
                                 <label for="discontinued"><spring:message code="label.dateDiscontinued"/></label>
-                                <!--  <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">-->
                                 <form:input class="form-control" path="dateDiscontinued" placeholder="yyyy-MM-dd"/>
                                 <form:errors path="dateDiscontinued" />
                                 <c:out value="${messageErrorDiscontinued}" />

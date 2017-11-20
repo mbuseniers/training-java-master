@@ -35,7 +35,7 @@
 			</h2>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="POST" class="form-inline">
+					<form id="searchForm" action="dashboard" method="POST" class="form-inline">
 
 						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
 						<input type="hidden" name="actionType" value="SEARCH">
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
 				type="hidden" name="actionType" value="DELETE">
 		</form>
