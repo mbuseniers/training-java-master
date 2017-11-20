@@ -22,34 +22,34 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
-                    <h1>Add Computer</h1>
+                    <h1><spring:message code="label.titreAddComputer"/></h1>
                     	<h2><c:out value="${messageAjout}" /></h2>
                     <form:form action="addcomputer" method="POST" modelAttribute="computerDTO">
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer name</label>
+                                <label for="computerName"><spring:message code="label.computerName"/></label>
                                 <!--<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">-->
-                                <form:input path="name" placeholder="Computer name"/>
+                                <form:input class="form-control" path="name" placeholder="Computer name"/>
                                 <form:errors path="name" />
                                 <c:out value="${messageErrorName}" />
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date</label>
+                                <label for="introduced"><spring:message code="label.dateIntroduced"/></label>
                                 <!-- <input type="date" class="form-control" id="introduced" name="introduced" placeholder="yyyy-MM-dd"> -->
-                                <form:input path="dateIntroduced" placeholder="yyyy-MM-dd"/>
+                                <form:input class="form-control" path="dateIntroduced" placeholder="yyyy-MM-dd"/>
                                 <form:errors path="dateIntroduced" />
                                 <c:out value="${messageErrorIntroduced}" />
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date</label>
+                                <label for="discontinued"><spring:message code="label.dateDiscontinued"/></label>
                                 <!--  <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="yyyy-MM-dd">-->
-                                <form:input path="dateDiscontinued" placeholder="yyyy-MM-dd"/>
+                                <form:input class="form-control" path="dateDiscontinued" placeholder="yyyy-MM-dd"/>
                                 <form:errors path="dateDiscontinued" />
                                 <c:out value="${messageErrorDiscontinued}" />
                                 
                             </div>
                             <div class="form-group">
-                                <label for="companyId">Company</label>
+                                <label for="companyId"><spring:message code="label.company"/></label>
                                 <select class="form-control" id="companyId" name="companyId" >
                                     <option value="0">--</option>
                                     <c:forEach items="${listeCompanies}" var="company">
