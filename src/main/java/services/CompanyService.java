@@ -2,36 +2,39 @@ package services;
 
 import java.util.ArrayList;
 
-import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import dao.DAOCompany;
+import dao.CompanyRepository;
+import dao.ComputerRepository;
 import model.Company;
 
 @Service("companyService")
 @Scope("singleton")
 public class CompanyService {
 
-	@Resource(name="daoCompany")
-	private DAOCompany daoCompany;
+	@Autowired
+	private CompanyRepository companyRepository;
 
-	public CompanyService(DAOCompany daoCompany) {
-		this.daoCompany = daoCompany;
-	}
+	@Autowired
+	private ComputerRepository computerRepository;
 	
-
 	public ArrayList<Company> getCompanies() {
-		return daoCompany.getCompanies();
+		return (ArrayList<Company>) companyRepository.findAll();
 	}
 
-	public boolean checkIdCompany(int id) {
-		return daoCompany.checkIdCompany(id);
+	public boolean checkIdCompany(long id) {
+		return companyRepository.findById(id).isPresent();
 	}
 
-	public boolean deleteCompanyById(int id) {
-		return daoCompany.deleteCompanyById(id);
+	 @Transactional(rollbackOn=Exception.class)
+	 public boolean deleteCompanyById(long id) {
+		computerRepository.deleteComputersByCompanyId(id);
+		companyRepository.deleteById(id);
+		return true;		
 	}
 
 }

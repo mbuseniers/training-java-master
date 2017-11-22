@@ -11,10 +11,10 @@ public class TestCompanyMapper {
 
 	@Autowired
 	CompanyMapper cm;
-	
+	/*
 	@Test
 	public void testMappToCompany() {
 		assertEquals((new Company(1,"Apple").toString()),cm.mappToCompany(1,"Apple").toString() );
-	}
+	}*/
 
 }

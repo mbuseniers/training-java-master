@@ -1,8 +1,5 @@
 package services;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -11,13 +8,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
 import dto.ComputerDTO;
+import mappers.ComputerMapper;
+import model.Computer;
 
 @Component
 public class Page {
-	
+
 	@Autowired
 	private ComputerService computerService;
-	
+
+	@Autowired
+	private ComputerMapper computerMapper;
+
 	public void doPagination(ModelMap model, Map<String, String> parameters) {
 		int numeroPage = 0, nombreComputersByPage = 0, intervalPageMin = 0, intervalPageMax = 2, nombrePageMax = 0;
 		int nombreComputers = computerService.getNumberComputers();
@@ -85,17 +87,17 @@ public class Page {
 			}
 		}
 
-		ArrayList<ComputerDTO> listeComputers;
-
-		listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
+		ArrayList<Computer> listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
 				numeroPage * nombreComputersByPage);
-		
-		model.addAttribute("liste", listeComputers);
+
+		ArrayList<ComputerDTO> listeComputersDTO = computerMapper.ComputersToComputersDTO(listeComputers);
+
+		model.addAttribute("liste", listeComputersDTO);
 		model.addAttribute("page", numeroPage);
 		model.addAttribute("size", nombreComputersByPage);
 		model.addAttribute("intervalMin", intervalPageMin);
 		model.addAttribute("intervalMax", intervalPageMax);
 		model.addAttribute("nombreComputers", nombreComputers);
 	}
-	
+
 }

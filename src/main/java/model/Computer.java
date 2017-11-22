@@ -2,13 +2,28 @@ package model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
+    @Column(name = "introduced")
 	private LocalDate dateIntroduced;
+    @Column(name = "discontinued")
 	private LocalDate dateDiscontinued;
-	private Company company;
+    @ManyToOne(targetEntity = Company.class)   
+    private Company company;
 	
 	
 	public int getId() {

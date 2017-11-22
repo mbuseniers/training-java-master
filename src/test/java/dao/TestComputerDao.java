@@ -9,16 +9,16 @@ import exceptions.DAOException;
 public class TestComputerDao {
 
 	@Autowired
-	DAOComputer daoC;
+	ComputerRepository daoC;
 	
     @Test(expected=NullPointerException.class)
 	public void testInsertComputerNull() throws DAOException {
-		daoC.addComputer(null);
+		daoC.save(null);
 	}
 
     @Test(expected=NullPointerException.class)
 	public void testUpdateComputerNull() throws DAOException {
-		daoC.updateComputer(1,null);
+		daoC.save(null);
 	}
     
 }

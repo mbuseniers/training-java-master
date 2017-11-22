@@ -1,8 +1,17 @@
 package model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name ="company")
 public class Company {
 	
 
+	@Id
+    @Column(name = "id") 	
 	private int id;
 	private String name;
 	
@@ -19,6 +28,8 @@ public class Company {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Company(){}
 	
 	public Company(int id, String name) {
 		super();

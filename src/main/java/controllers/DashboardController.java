@@ -14,11 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import dto.ComputerDTO;
+import mappers.ComputerMapper;
 import model.Company;
+import model.Computer;
 import services.CompanyService;
 import services.ComputerService;
 import services.Page;
@@ -36,6 +37,9 @@ public class DashboardController {
 	private ComputerService computerService;
 
 	@Autowired
+	private ComputerMapper computerMapper;
+	
+	@Autowired
 	private CompanyService companyService;
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
@@ -50,27 +54,30 @@ public class DashboardController {
 	public String searchComputers(@RequestParam("searchBy") String searchBy, @RequestParam("search") String search,
 			ModelMap model) {
 		LOGGER.info("doPost servlet dashboard");
-		ArrayList<ComputerDTO> listeComputers = null;
+		ArrayList<ComputerDTO> listComputersDTO = null;
+		ArrayList<Computer> listComputers = null;
 		int page = 0, size = 50, intervalMin = 0, intervalMax = 0;
 		int nombreComputers = 0;
 		if (!search.equals("")) {
 
 			if (searchBy.equals("Filter by name")) {
 				LOGGER.info("SEARCH by name");
-				listeComputers = computerService.getComputersByName(search);
+				listComputers = computerService.getComputersByName(search);
 			} else if (searchBy.equals("Filter by company")) {
 				LOGGER.info("SEARCH by company");
-				listeComputers = computerService.getComputersByCompanyName(search);
+				listComputers = computerService.getComputersByCompanyName(search);
 			}
+			listComputersDTO = computerMapper.ComputersToComputersDTO(listComputers);
+			
 			size = 100;
 			intervalMin = 0;
 			intervalMax = 0;
-			nombreComputers = listeComputers.size();
+			nombreComputers = listComputersDTO.size();
 		} else {
 			model.addAttribute("messageErreurSearch", "La recherche ne peut être nulle");
 			return "redirect:/dashboard";
 		}
-		model.addAttribute("liste", listeComputers);
+		model.addAttribute("liste", listComputersDTO);
 		model.addAttribute("page", page);
 		model.addAttribute("size", size);
 		model.addAttribute("intervalMin", intervalMin);
