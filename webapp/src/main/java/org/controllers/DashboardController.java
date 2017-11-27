@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Controller
-@EnableWebMvc
 public class DashboardController {
 
 	private static final long serialVersionUID = 1L;
