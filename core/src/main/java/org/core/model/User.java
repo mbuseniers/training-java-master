@@ -1,8 +1,16 @@
 package org.core.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -10,19 +18,33 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
-	private int iduser;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-	@Column
+    @Column(name = "name")
 	private String name;
 
 	@Column
 	private String password;
 
-	public String getLogin() {
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles;
+	
+	public User() {}
+	
+	public User(String name, String hashedPassword) {
+		this.name=name;
+		this.password = hashedPassword;
+	}
+
+	public String getName() {
 		return name;
 	}
 
-	public void setLogin(String login) {
+	public void setName(String login) {
 		this.name = login;
 	}
 
@@ -35,11 +57,19 @@ public class User {
 	}
 
 	public int getId() {
-		return iduser;
+		return id;
 	}
 
 	public void setId(int id) {
-		this.iduser = id;
+		this.id = id;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+	
+	public void setRole(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 }

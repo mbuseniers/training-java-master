@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -30,7 +28,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableTransactionManagement
 @PropertySource("classpath:spring.properties")
 @EnableJpaRepositories
-//@ComponentScan({  "org.console", "org.core.dto", "org.persistence" })
+@ComponentScan({  "org.console", "org.core", "org.persistence" })
 public class PersistenceConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfiguration.class);

@@ -48,7 +48,7 @@ public class Utils {
 		do {
 			try {
 				
-				listCompany.stream().forEach(System.out::println);
+				//listCompany.stream().forEach(System.out::println);
 
 				System.out.println("Saisir l'ID du fabriquant entre 1 et " + listCompany.size() );
 

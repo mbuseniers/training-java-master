@@ -17,14 +17,15 @@ public class Main {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 	@Autowired
-	Utils utils;
+	static Utils utils;
 	
 	public static void main(String[] args) throws SQLException {
 
+		
+
+		utils.chooseCompany();
 		System.out.println("Bienvenue sur le projet Computer Database");
 
-	
-		
 		//ApplicationContext context = new ClassPathXmlApplicationContext("/Beans.xml");
 	    //Computer obj = (Computer) context.getBean("computer");
 	    //obj.getId();
@@ -72,14 +73,14 @@ public class Main {
 				
 				System.out.println("Liste des Company : ");
 
-				companyService.getCompanies().stream().forEach(System.out::println);
+				//companyService.getCompanies().stream().forEach(System.out::println);
 				break;
 				
 			case 6 : 
 				Scanner sc = new Scanner(System.in);
 				//companyService; // = CompanyService.getInstance();
 				//CptService = ComputerService.getInstance();
-				companyService.getCompanies().stream().forEach(System.out::println);
+				//companyService.getCompanies().stream().forEach(System.out::println);
 				
 				System.out.println("Saisir le jour : ");
 				int numeroCompany = sc.nextInt();
