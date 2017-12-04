@@ -1,4 +1,4 @@
-package org.core.mappers;
+package org.mappers;
 
 import java.sql.Date;
 import java.sql.ResultSet;

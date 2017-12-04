@@ -6,9 +6,9 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.core.dto.ComputerDTO;
-import org.core.mappers.ComputerMapper;
 import org.core.model.Company;
 import org.core.model.Computer;
+import org.mappers.ComputerMapper;
 import org.service.CompanyService;
 import org.service.ComputerService;
 import org.service.Page;
@@ -108,10 +108,6 @@ public class DashboardController {
 		ArrayList<Company> listCompanies;
 		listCompanies = companyService.getCompanies();
 		model.addAttribute("listeCompanies", listCompanies);
-
-		LOGGER.info(computerDTO.getName());
-		LOGGER.info(computerDTO.getDateIntroduced());
-		LOGGER.info(computerDTO.getDateDiscontinued());
 
 		if (bindingResult.hasErrors()) {
 			LOGGER.info("erreur dans le formulaire");

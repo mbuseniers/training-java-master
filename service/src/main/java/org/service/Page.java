@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.core.dto.ComputerDTO;
-import org.core.mappers.ComputerMapper;
 import org.core.model.Computer;
+import org.mappers.ComputerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;

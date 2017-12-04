@@ -29,14 +29,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		LOGGER.info("config secu auth");
 		auth.authenticationProvider(authenticationProvider());
-		//auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
@@ -60,13 +56,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		LOGGER.info("password encoder");
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
-	    DaoAuthenticationProvider authProvider
-	      = new DaoAuthenticationProvider();
-	    authProvider.setUserDetailsService(userService);
-	    authProvider.setPasswordEncoder(passwordEncoder());
-	    return authProvider;
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
 	}
 }

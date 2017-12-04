@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import org.core.model.Computer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 
 
-@Component
+@Repository
 public interface ComputerRepository extends JpaRepository<Computer, Integer> {
 
 	@Query(value = "SELECT * FROM computer LEFT JOIN company on computer.company_id=company.id  WHERE computer.name LIKE %?1%  LIMIT ?3 OFFSET ?2  ", nativeQuery = true)

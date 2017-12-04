@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.core.model.Company;
 import org.core.model.Computer;
@@ -17,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 
 
-@Service("computerService")
-@EnableJpaRepositories(basePackages = "org.persistence")
-@Scope("singleton")
+@Service
 public class ComputerService {
 
 	@Autowired
@@ -55,11 +54,31 @@ public class ComputerService {
 		}
 		return isDeleteOk;
 	}
+	
+	public void deleteComputerById(int id) {
+		computerRepository.deleteById(id);
+	}
 
+	public Computer addComputer(Computer computer) {
+		return computerRepository.save(computer);
+	}
+	
+	public Computer editComputer(Computer computer) {
+		return computerRepository.save(computer);
+	}
+	
 	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
 		return computerRepository.findWithLimitOffset(offset, limit);
 	}
+	
+	public ArrayList<Computer> getComputers(){
+		return (ArrayList<Computer>)computerRepository.findAll();
+	}
 
+	public Optional<Computer> getComputersById(int id){
+		return computerRepository.findById(id);
+	}
+	
 	public ArrayList<Computer> getComputersByName(String name) {
 		return computerRepository.findByName(name);
 

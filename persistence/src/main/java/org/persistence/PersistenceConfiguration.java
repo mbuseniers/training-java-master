@@ -27,8 +27,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableWebMvc
 @EnableTransactionManagement
 @PropertySource("classpath:spring.properties")
-@EnableJpaRepositories
-@ComponentScan({  "org.console", "org.core", "org.persistence" })
+@EnableJpaRepositories(basePackages = "org.persistence")
 public class PersistenceConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfiguration.class);
