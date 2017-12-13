@@ -33,7 +33,6 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<finalName>webapp</finalName>
