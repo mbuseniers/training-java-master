@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"org.controllers", "org.core", "org.service", "org.persistence"})
+@ComponentScan({"org.controllers", "org.core", "org.service", "org.persistence", "org.mappers"})
 public class SpringConfiguration {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfiguration.class);
 
