@@ -20,17 +20,16 @@
 
 	<section id="main">
 		<div class="container">
+			
+			<h2>
+				<c:out value="${messageAction}" />
+			</h2>
 			<h1 id="homeTitle">
 
 				<c:out value="${nombreComputers}" />
 				Computers found
 			</h1>
-			<h2>
-				<c:out value="${messageDelete}" />
-			</h2>
-			<h2>
-				<c:out value="${messageErreurSearch}" />
-			</h2>
+			
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="dashboard" method="POST" class="form-inline">
@@ -87,7 +86,7 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer['id']}"></td>
 							<td><a
-								href="editcomputer?id=${computer['id']}&name=${computer['name']}&introduced=${computer['dateIntroduced']}&discontinued=${computer['dateDiscontinued']}&company=${computer.companyId}"
+								href="editcomputer?id=${computer.id}"
 								onclick=""><c:out value="${computer.name}" /></a></td>
 							<td><c:out value="${computer['dateIntroduced']}" /></td>
 							<td><c:out value="${computer['dateDiscontinued']}" /></td>

@@ -1,7 +1,9 @@
 package org.controllers;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -15,8 +17,6 @@ import org.service.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -40,11 +40,16 @@ public class DashboardController {
 
 	@Autowired
 	private CompanyService companyService;
+
+	@Autowired
+	private ComputerValidator computerValidator;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	@GetMapping("/dashboard")
 	protected String getDashboard(@RequestParam Map<String, String> parameters, ModelMap model) {
 		LOGGER.info("doGet servlet dashboard");
+		model.addAttribute("messageAction", parameters.get("messageAction"));
 		page.doPagination(model, parameters);
 		return "dashboard";
 	}
@@ -90,24 +95,24 @@ public class DashboardController {
 		LOGGER.info("DELETE CPT");
 		boolean isDeleteOk = false;
 		isDeleteOk = computerService.deleteComputer(selection);
+		LOGGER.info("redirect dashboard DELETE OK");
 		return "redirect:/dashboard";
 
 	}
 
 	@GetMapping("/addcomputer")
 	public String getPageAddComputer(ModelMap model) {
-		ArrayList<Company> listCompanies;
-		listCompanies = companyService.getCompanies();
-		model.addAttribute("listeCompanies", listCompanies);
+		Map<Integer, String> mapCompanies = companyService.getMapCompanies();
+		model.addAttribute("mapCompanies", mapCompanies);
 		model.addAttribute("computerDTO", new ComputerDTO());
 		return "addcomputer";
 	}
 
 	@PostMapping("/addcomputer")
 	public String sendFormAddComputer(@Valid ComputerDTO computerDTO, BindingResult bindingResult, ModelMap model) {
-		ArrayList<Company> listCompanies;
-		listCompanies = companyService.getCompanies();
-		model.addAttribute("listeCompanies", listCompanies);
+		Map<Integer, String> mapCompanies = companyService.getMapCompanies();
+		model.addAttribute("mapCompanies", mapCompanies);
+		computerValidator.validate(computerDTO, bindingResult);
 
 		if (bindingResult.hasErrors()) {
 			LOGGER.info("erreur dans le formulaire");
@@ -116,51 +121,58 @@ public class DashboardController {
 			LOGGER.info("pas d'erreur dans le formulaire");
 			computerService.addComputer(computerDTO.getName(), computerDTO.getDateIntroduced(),
 					computerDTO.getDateDiscontinued(), computerDTO.getCompanyId());
+			LOGGER.info("redirect dashboard ADD OK");
+			model.addAttribute("messageAction","Computer Added");
 			return "redirect:dashboard";
 		}
 
 	}
 
 	@GetMapping("/editcomputer")
-	public String getPageEditComputer(ModelMap model, @RequestParam("id") String id,
-			@RequestParam("name") String computerName, @RequestParam("introduced") String introduced,
-			@RequestParam("discontinued") String discontinued, @RequestParam("company") String company) {
+	public String getPageEditComputer(ModelMap model, @RequestParam(value = "id", required = false) String id) {
 
-		ArrayList<Company> listeCompanies;
+		Map<Integer, String> mapCompanies = companyService.getMapCompanies();
+		model.addAttribute("mapCompanies", mapCompanies);
 
-		listeCompanies = companyService.getCompanies();
-		model.addAttribute("listeCompanies", listeCompanies);
-		introduced = introduced == null ? "" : introduced;
-		discontinued = introduced == null ? "" : discontinued;
+		Optional<Computer> OptionnalComputer=null;
 
-		model.addAttribute("id", id);
-		model.addAttribute("name", computerName);
-		model.addAttribute("introduced", introduced);
-		model.addAttribute("discontinued", discontinued);
-		model.addAttribute("companyId", company);
-		model.addAttribute("computerDTO", new ComputerDTO());
-		return "editcomputer";
+		try {
+			OptionnalComputer = computerService.getComputersById(Integer.parseInt(id));
+		}catch(NumberFormatException e) {	
+			LOGGER.info("redirect dashboard FORMAT EXCEPTION");
+			model.addAttribute("messageAction","Computer Not Found");
+			return "redirect:/dashboard";
+		}
+		
+		if (OptionnalComputer.isPresent()) {
+			Computer computer = OptionnalComputer.get();
+			ComputerDTO computerDto = computerMapper.ComputerToComputerDTO(computer);
+			model.addAttribute("computerDTO", computerDto);
+			return "editcomputer";
+		}else {
+			LOGGER.info("redirect dashboard COMPUTER NOT FOUND");
+			model.addAttribute("messageAction","Computer Not Found");
+			return "redirect:/dashboard";
+		}
 	}
 
 	@PostMapping("/editcomputer")
 	public String doPost(@Valid ComputerDTO computerDTO, BindingResult bindingResult, ModelMap model) {
-		ArrayList<Company> listeCompanies;
-		listeCompanies = companyService.getCompanies();
-		model.addAttribute("listeCompanies", listeCompanies);
+		Map<Integer, String> mapCompanies = companyService.getMapCompanies();
+		model.addAttribute("mapCompanies", mapCompanies);
+		computerValidator.validate(computerDTO, bindingResult);
 
 		if (bindingResult.hasErrors()) {
 			LOGGER.info("erreur dans le formulaire");
 			return "editcomputer";
 		} else {
 			LOGGER.info("pas d'erreur dans le formulaire");
-			LOGGER.info(Integer.toString(computerDTO.getCompanyId()));
-
 			computerService.editComputer(Integer.valueOf(computerDTO.getId()), computerDTO.getName(),
 					computerDTO.getDateIntroduced(), computerDTO.getDateDiscontinued(),
 					Integer.valueOf(computerDTO.getCompanyId()));
+			LOGGER.info("redirect dashboard EDIT OK");
+			model.addAttribute("messageAction","Computer Edited");
 			return "redirect:/dashboard";
 		}
-
 	}
-
 }

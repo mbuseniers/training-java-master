@@ -54,6 +54,12 @@ public class ComputerMapper {
 		return listComputers;
 
 	}
+	
+	public ComputerDTO ComputerToComputerDTO(Computer computer) {
+		return new ComputerDTO(computer.getId(), computer.getName(),
+				convertLocalDateToString(computer.getDateIntroduced()), convertLocalDateToString(computer.getDateDiscontinued()),
+				getCompanyId(computer.getCompany()), getCompanyName(computer.getCompany()));
+	}
 
 	public int getCompanyId(Company company) {
 		if(company == null) {

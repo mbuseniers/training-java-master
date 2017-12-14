@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class ComputerService {
 
@@ -29,14 +27,22 @@ public class ComputerService {
 	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
-		computerRepository.save(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id)));
+		if (company_id != 0) {
+			computerRepository.save(new Computer(name, dateIntroduced, dateDiscontinued, new Company(company_id)));
+		} else {
+			computerRepository.save(new Computer(name, dateIntroduced, dateDiscontinued, null));
+		}
 		return true;
 	}
 
 	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
-		computerRepository.save((new Computer(id, name, dateIntroduced, dateDiscontinued, new Company(company_id))));
+		if (company_id != 0) {
+			computerRepository.save((new Computer(id, name, dateIntroduced, dateDiscontinued, new Company(company_id))));
+		}else {
+			computerRepository.save((new Computer(id, name, dateIntroduced, dateDiscontinued, null)));
+		}
 		return true;
 	}
 
@@ -54,7 +60,7 @@ public class ComputerService {
 		}
 		return isDeleteOk;
 	}
-	
+
 	public void deleteComputerById(int id) {
 		computerRepository.deleteById(id);
 	}
@@ -62,23 +68,23 @@ public class ComputerService {
 	public Computer addComputer(Computer computer) {
 		return computerRepository.save(computer);
 	}
-	
+
 	public Computer editComputer(Computer computer) {
 		return computerRepository.save(computer);
 	}
-	
+
 	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
 		return computerRepository.findWithLimitOffset(offset, limit);
 	}
-	
-	public ArrayList<Computer> getComputers(){
-		return (ArrayList<Computer>)computerRepository.findAll();
+
+	public ArrayList<Computer> getComputers() {
+		return (ArrayList<Computer>) computerRepository.findAll();
 	}
 
-	public Optional<Computer> getComputersById(int id){
+	public Optional<Computer> getComputersById(int id) {
 		return computerRepository.findById(id);
 	}
-	
+
 	public ArrayList<Computer> getComputersByName(String name) {
 		return computerRepository.findByName(name);
 
