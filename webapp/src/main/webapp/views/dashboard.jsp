@@ -36,15 +36,21 @@
 
 							<input type="search" id="searchbox" name="search"
 								class="form-sidebar" placeholder="Search computer" /> <input
-								type="hidden" name="actionType" value="SEARCH"> <input
-								type="submit" name="searchBy" id="searchComputer"
-								value="&#xf109" class="btn btn-primary wrapperComputer" /> <input
-								type="submit" name="searchBy" id="searchCompany" value="&#xf1b2"
-								class="btn btn-primary wrapperCompany" /> <input type="hidden"
-								name="actionType" value="SEARCH">
-							<div class="hovercompany">Search by company</div>
+								type="hidden" name="actionType" value="SEARCH">
+							<div class="tooltipMain">
+								<input type="submit" name="searchBy" id="searchComputer"
+									value="&#xf109" class="btn btn-primary" /><span
+									class="tooltiptext">Search by computer</span>
+							</div>
+							<div class="tooltipMain">
+								<input type="submit" name="searchBy" id="searchCompany"
+									value="&#xf1b2" class="btn btn-primary "></input> <span
+									class="tooltiptext">Search by company</span>
+							</div>
+							<input type="hidden" name="actionType" value="SEARCH">
+							<div class="hovercompany"></div>
 
-							<div class="hovercomputer">Search by computer</div>
+							<div class="hovercomputer"></div>
 						</form>
 					</div>
 					<div>
@@ -53,8 +59,9 @@
 							class="btn btn-default btn-sidebar" id="editComputer" href="#"
 							onclick="$.fn.toggleEditMode();">Edit</a> <a
 							class="btn btn-warning btn-sidebar" id="deleteCompany"
-							href="deleteCompany">delete company</a>
-							<img src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif" class="flaming">
+							href="deleteCompany">delete company</a> <img
+							src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif"
+							class="flaming">
 					</div>
 				</div>
 			</div>
@@ -73,6 +80,7 @@
 					class="btn btn-info navbar-btn">
 					<i class="glyphicon glyphicon-align-left"></i> Toggle Sidebar
 				</button>
+
 			</div>
 		</div>
 	</header>
@@ -88,7 +96,11 @@
 
 				<c:out value="${nombreComputers}" />
 				Computers found on the database
+
 			</h1>
+			<div class="tooltipMain">
+				Hover over me <span class="tooltiptext">Tooltip text</span>
+			</div>
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
