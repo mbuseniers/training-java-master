@@ -1,5 +1,6 @@
 package org.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,8 +47,8 @@ public class CompanyService {
 		return companyRepository.findById(id).isPresent();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
-	public boolean deleteCompanyById(long id) {
+	 @Transactional(rollbackOn=Exception.class)
+	 public boolean deleteCompanyById(long id) throws SQLException {
 		computerRepository.deleteComputersByCompanyId(id);
 		companyRepository.deleteById(id);
 		return true;

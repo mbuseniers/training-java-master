@@ -21,6 +21,9 @@ public interface ComputerRepository extends JpaRepository<Computer, Integer> {
 	@Query(value = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE '%' ?1 '%'", nativeQuery= true)
 	public ArrayList<Computer> findByName(String name);
 	
+	@Query(value= "SELECT * FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE company.id=?1", nativeQuery=true)
+	public  ArrayList<Computer> findByCompanyId(Long companyIdToFind);
+	
 	@Query(value = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE company.name LIKE '%' ?1 '%'", nativeQuery= true)
 	public ArrayList<Computer> findByCompanyName(String name);
 	
