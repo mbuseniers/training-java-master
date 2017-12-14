@@ -222,4 +222,7 @@ input {
 .tooltipMain:hover  .tooltiptext {
     visibility: visible;
     opacity: 1;
+.errorForm {
+	color: red;
+	font-weight: 800;
 }

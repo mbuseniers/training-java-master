@@ -22,13 +22,6 @@
 				<h3>What would you like to do?</h3>
 			</div>
 			<div class="container-sidebar">
-
-				<h2>
-					<c:out value="${messageDelete}" />
-				</h2>
-				<h2>
-					<c:out value="${messageErreurSearch}" />
-				</h2>
 				<div id="actions" class="form-horizontal">
 					<div class="pull-left">
 						<form id="searchForm" action="dashboard" method="POST"
@@ -74,13 +67,28 @@
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
-			<div id="content">
+				Database 
+      			<div id="content">
 				<button type="button" id="sidebarCollapse"
 					class="btn btn-info navbar-btn">
 					<i class="glyphicon glyphicon-align-left"></i> Toggle Sidebar
 				</button>
+</a>
 
+		</div>
+	</header>
+
+	<section id="main">
+		<div class="container">
+			
+			<h2>
+				<c:out value="${messageAction}" />
+			</h2>
+			<h1 id="homeTitle">
+
+				<c:out value="${nombreComputers}" />
+				Computers found
+			</h1>
 			</div>
 		</div>
 	</header>
@@ -132,7 +140,7 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer['id']}"></td>
 							<td><a
-								href="editcomputer?id=${computer['id']}&name=${computer['name']}&introduced=${computer['dateIntroduced']}&discontinued=${computer['dateDiscontinued']}&company=${computer.companyId}"
+								href="editcomputer?id=${computer.id}"
 								onclick=""><c:out value="${computer.name}" /></a></td>
 							<td><c:out value="${computer['dateIntroduced']}" /></td>
 							<td><c:out value="${computer['dateDiscontinued']}" /></td>
