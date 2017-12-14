@@ -1,5 +1,6 @@
 package org.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.transaction.Transactional;
@@ -32,10 +33,10 @@ public class CompanyService {
 	}
 
 	 @Transactional(rollbackOn=Exception.class)
-	 public boolean deleteCompanyById(long id) {
+	 public boolean deleteCompanyById(long id) throws SQLException {
 		computerRepository.deleteComputersByCompanyId(id);
 		companyRepository.deleteById(id);
-		return true;		
+		return true;
 	}
 
 }

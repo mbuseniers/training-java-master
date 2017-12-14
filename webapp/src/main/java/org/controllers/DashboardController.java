@@ -1,6 +1,8 @@
 package org.controllers;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -15,14 +17,13 @@ import org.service.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class DashboardController {
@@ -162,5 +163,50 @@ public class DashboardController {
 		}
 
 	}
+	
+	
+	@GetMapping("/deleteCompany")
+	protected ModelAndView getDelete(){
+		ModelAndView modelAndView = new ModelAndView("/deleteCompany");		
+		List<Company> listCompanies= companyService.getCompanies();
+		modelAndView.addObject( "listcompanies", listCompanies);
+
+		return modelAndView;
+	}
+
+	
+	@PostMapping("/deleteCompany")
+	protected ModelAndView postDelete( @RequestParam Map<String, String> parameters){
+		ModelAndView modelAndView = new ModelAndView("/deleteCompany");
+		final String errorMessageDelete ="Une erreur est survenue lors de la suppression de la companie. voir le message ci-dessous :" ;
+		String confirmation = parameters.get("confirmation");
+		Long companyId=0L;
+		if(confirmation==null) {	
+			String companyIdString = parameters.get("companyId");
+			companyId=Long.valueOf(companyIdString);
+			List<ComputerDTO> computersToFind = computerMapper.ComputersToComputersDTO(computerService.getComputersByCompanyId(companyId));
+			modelAndView.addObject("listComputer", computersToFind );
+			List<Company> listCompanies= companyService.getCompanies();
+					
+			modelAndView.addObject( "listcompanies", listCompanies);
+			return modelAndView;
+			
+		}else if(confirmation.equals("Delete!")) {
+			try {
+				computerService.deleteComputerAndCompany(companyId);
+				return modelAndView = new ModelAndView("/deleteCompany");
+			} catch (SQLException e) {
+				modelAndView.addObject( "errorMessage", errorMessageDelete+"\n"+e.getMessage());
+				List<ComputerDTO> computersToFind = computerMapper.ComputersToComputersDTO(
+						computerService.getComputersByCompanyId(companyId));
+				modelAndView.addObject("listComputer", computersToFind );
+				List<Company> listCompanies= companyService.getCompanies();
+				modelAndView.addObject( "listcompanies", listCompanies);
+				return modelAndView;
+			}
+		}
+		return modelAndView;
+	}	
+	
 
 }

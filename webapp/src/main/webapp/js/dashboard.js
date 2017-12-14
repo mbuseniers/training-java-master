@@ -85,9 +85,24 @@ $(document).keydown(function(e) {
         //E key (CTRL+E will switch to edit mode)
         case 69:
             if(e.ctrlKey) {
-                $.fn.toggleEditMode();
+                $.fn.toggleEditMode();$(document).ready(function () {
+
+                    $('#sidebarCollapse').on('click', function () {
+                        $('#sidebar').toggleClass('active');
+                    });
+
+                });
             }
             break;
     }
 });
 
+//ToggleSidebar
+
+$(document).ready(function () {
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
+});

@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @Configuration
 @Import(PersistenceConfiguration.class)
-@ComponentScan({"org.controllers", "org.core", "org.service", "org.persistence"})
 public class WebAppInitializer implements WebApplicationInitializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppInitializer.class);
@@ -37,6 +36,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		dispatcher.addMapping("/addcomputer");
 		dispatcher.addMapping("/editcomputer");
 		dispatcher.addMapping("/deletecomputers");
+		dispatcher.addMapping("/deleteCompany");
 
 	}
 

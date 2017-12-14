@@ -1,5 +1,6 @@
 package org.service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,8 +13,6 @@ import org.persistence.ComputerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
 
@@ -23,6 +22,8 @@ public class ComputerService {
 
 	@Autowired
 	private ComputerRepository computerRepository;
+	@Autowired
+	private CompanyService companyService;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 
@@ -83,11 +84,20 @@ public class ComputerService {
 		return computerRepository.findByName(name);
 
 	}
-
+	
 	public ArrayList<Computer> getComputersByCompanyName(String search) {
 		return computerRepository.findByCompanyName(search);
 	}
 
+	public ArrayList<Computer> getComputersByCompanyId(Long companyId) {
+		return computerRepository.findByCompanyId(companyId);
+	}
+
+	public  void deleteComputerAndCompany(Long companyId) throws SQLException {
+		companyService.deleteCompanyById(companyId);
+	}
+
+	
 	public LocalDate checkDateIsCorrect(String date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDate;
