@@ -59,7 +59,8 @@
 							<div class="form-group">
 								<label for="companyId"><spring:message
 										code="label.company" /></label>
-								<spring:message code="label.selectCompany" var="selectCompanyText"/>
+								<spring:message code="label.selectCompany"
+									var="selectCompanyText" />
 								<form:select path="companyId" class="form-control">
 									<form:option value="0" label="${selectCompanyText}" />" />
 									<form:options items="${mapCompanies}" />
@@ -67,8 +68,12 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+						<spring:message code="label.add"
+									var="add" />
+							<input type="submit" value="${add}" class="btn btn-primary">
+							<spring:message code="label.or" />
+							<a href="dashboard" class="btn btn-default"><spring:message
+									code="label.cancel" /></a>
 						</div>
 					</form:form>
 				</div>

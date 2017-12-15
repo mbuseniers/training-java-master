@@ -53,8 +53,7 @@ public class DashboardController {
 	protected String getDashboard(@RequestParam Map<String, String> parameters, ModelMap model) {
 		LOGGER.info("doGet servlet dashboard");
 		model.addAttribute("messageAction", parameters.get("messageAction"));
-		page.doPagination(model, parameters);
-		return "dashboard";
+		return page.doPagination(model, parameters);
 	}
 
 	@PostMapping("/dashboard")
