@@ -1,4 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags/form"
+	prefix="springForm"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +23,7 @@
 		<nav id="sidebar">
 			<!-- Sidebar Header -->
 			<div class="sidebar-header">
-				<h3>What would you like to do?</h3>
+				<h3><spring:message code="label.whatToDoText"/></h3>
 			</div>
 			<div class="container-sidebar">
 				<div id="actions" class="form-horizontal">
@@ -31,14 +35,18 @@
 								class="form-sidebar" placeholder="Search computer" /> <input
 								type="hidden" name="actionType" value="SEARCH">
 							<div class="tooltipMain">
+								<spring:message code="label.searchByCompany"
+									var="searchByCompany" />
 								<input type="submit" name="searchBy" id="searchComputer"
 									value="&#xf109" class="btn btn-primary" /><span
-									class="tooltiptext">Search by computer</span>
+									class="tooltiptext">${searchByCompany}</span>
 							</div>
 							<div class="tooltipMain">
+							<spring:message code="label.searchByComputer"
+									var="searchByComputer" />
 								<input type="submit" name="searchBy" id="searchCompany"
 									value="&#xf1b2" class="btn btn-primary "></input> <span
-									class="tooltiptext">Search by company</span>
+									class="tooltiptext">${searchByComputer}</span>
 							</div>
 							<input type="hidden" name="actionType" value="SEARCH">
 							<div class="hovercompany"></div>
@@ -48,11 +56,11 @@
 					</div>
 					<div>
 						<a class="btn btn-success btn-sidebar" id="addComputer"
-							href="addcomputer">Add Computer</a> <a
+							href="addcomputer"><spring:message code="label.addButton"/></a> <a
 							class="btn btn-default btn-sidebar" id="editComputer" href="#"
-							onclick="$.fn.toggleEditMode();">Edit</a> <a
+							onclick="$.fn.toggleEditMode();"><spring:message code="label.editButton"/></a> <a
 							class="btn btn-warning btn-sidebar" id="deleteCompany"
-							href="deleteCompany">delete company</a> <img
+							href="deleteCompany"><spring:message code="label.deleteButton"/></a> <img
 							src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif"
 							class="flaming">
 					</div>
@@ -84,11 +92,6 @@
 			<h2>
 				<c:out value="${messageAction}" />
 			</h2>
-			<h1 id="homeTitle">
-
-				<c:out value="${nombreComputers}" />
-				Computers found
-			</h1>
 			</div>
 		</div>
 	</header>
@@ -103,12 +106,9 @@
 			<h1 id="homeTitle">
 
 				<c:out value="${nombreComputers}" />
-				Computers found on the database
+				<spring:message code="label.computersFoundText"/>
 
 			</h1>
-			<div class="tooltipMain">
-				Hover over me <span class="tooltiptext">Tooltip text</span>
-			</div>
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
@@ -122,10 +122,10 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<th>Discontinued date</th>
-						<th>Company</th>
+						<th><spring:message code="label.computerName"/></th>
+						<th><spring:message code="label.dateIntroduced"/></th>
+						<th><spring:message code="label.dateDiscontinued"/></th>
+						<th><spring:message code="label.company"/></th>
 
 					</tr>
 				</thead>
@@ -185,13 +185,7 @@
 				<c:if test="${size != 10}">
 					<a href="dashboard?changeSize=1&size=10" type="button">
 						<button type="button"
-							class="btn btn-defaul$(document).ready(function () {
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
-
-});t">10</button>
+							class="btn btn-default">10</button>
 					</a>
 				</c:if>
 
@@ -210,14 +204,14 @@
 
 
 				<c:if test="${size == 100}">
-					<a href="dashboard?changeSize&size=100" type="button">
+					<a href="dashboard?changeSize=1&size=100" type="button">
 						<button style="color: white; background-color: #337ab7;"
 							type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>
 
 				<c:if test="${size != 100}">
-					<a href="dashboard?changeSize&size=100" type="button">
+					<a href="dashboard?changeSize=1&size=100" type="button">
 						<button type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>

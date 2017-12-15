@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
-
-
 @Component
 public class Page {
 
@@ -21,7 +19,11 @@ public class Page {
 	@Autowired
 	private ComputerMapper computerMapper;
 
-	public void doPagination(ModelMap model, Map<String, String> parameters) {
+	public String doPagination(ModelMap model, Map<String, String> parameters) {
+		ArrayList<Integer> listSizeByPage = new ArrayList<>();
+		listSizeByPage.add(10);
+		listSizeByPage.add(50);
+		listSizeByPage.add(100);
 		int numeroPage = 0, nombreComputersByPage = 0, intervalPageMin = 0, intervalPageMax = 2, nombrePageMax = 0;
 		int nombreComputers = computerService.getNumberComputers();
 
@@ -39,11 +41,18 @@ public class Page {
 			}
 			intervalPageMin = 0;
 		} else if (parameters.get("changeSize") != null) {
-			nombreComputersByPage = Integer.valueOf(parameters.get("size"));
+			nombreComputersByPage = 0;
+			try {
+				nombreComputersByPage = Integer.valueOf(parameters.get("size"));
+			} catch (NumberFormatException e) {
+				model.addAttribute("messageAction", "DO.NOT.TOUCH.THE.URL !!!");
+				return "redirect:dashboard";
+			}
 			numeroPage = 0;
 
-			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
-				nombreComputersByPage = 50;
+			if (!listSizeByPage.contains(nombreComputersByPage)) {
+				model.addAttribute("messageAction", "DO.NOT.TOUCH.THE.URL !!!");
+				return "redirect:dashboard";
 			}
 
 			nombrePageMax = nombreComputers / nombreComputersByPage;
@@ -57,11 +66,19 @@ public class Page {
 			}
 
 		} else if (parameters.get("changePage") != null) {
-			numeroPage = Integer.valueOf(parameters.get("page"));
-			nombreComputersByPage = Integer.valueOf(parameters.get("size"));
+			nombreComputersByPage = 0;
+			numeroPage = 0;
+			try {
+				numeroPage = Integer.valueOf(parameters.get("page"));
+				nombreComputersByPage = Integer.valueOf(parameters.get("size"));
+			} catch (NumberFormatException e) {
+				model.addAttribute("messageAction", "DO.NOT.TOUCH.THE.URL !!!");
+				return "redirect:dashboard";
+			}
 
-			if (nombreComputersByPage < 0 || nombreComputersByPage > 100) {
-				nombreComputersByPage = 50;
+			if (!listSizeByPage.contains(nombreComputersByPage)) {
+				model.addAttribute("messageAction", "DO.NOT.TOUCH.THE.URL !!!");
+				return "redirect:dashboard";
 			}
 
 			nombrePageMax = nombreComputers / nombreComputersByPage;
@@ -86,6 +103,7 @@ public class Page {
 			} else {
 				intervalPageMax = numeroPage + 2;
 			}
+
 		}
 
 		ArrayList<Computer> listeComputers = computerService.getComputersByLimitAndOffset(nombreComputersByPage,
@@ -99,6 +117,7 @@ public class Page {
 		model.addAttribute("intervalMin", intervalPageMin);
 		model.addAttribute("intervalMax", intervalPageMax);
 		model.addAttribute("nombreComputers", nombreComputers);
+		return "dashboard";
 	}
 
 }
