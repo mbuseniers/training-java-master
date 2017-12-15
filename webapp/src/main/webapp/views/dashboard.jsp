@@ -44,6 +44,11 @@
 							<div class="hovercompany"></div>
 
 							<div class="hovercomputer"></div>
+
+
+							<input type="hidden"
+								   name="${_csrf.parameterName}"
+								   value="${_csrf.token}"/>
 						</form>
 					</div>
 					<div>
@@ -97,6 +102,9 @@
 		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
 				type="hidden" name="actionType" value="DELETE">
+			<input type="hidden"
+				   name="${_csrf.parameterName}"
+				   value="${_csrf.token}"/>
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -185,13 +193,7 @@
 				<c:if test="${size != 10}">
 					<a href="dashboard?changeSize=1&size=10" type="button">
 						<button type="button"
-							class="btn btn-defaul$(document).ready(function () {
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
-
-});t">10</button>
+							class="btn btn-default">10</button>
 					</a>
 				</c:if>
 

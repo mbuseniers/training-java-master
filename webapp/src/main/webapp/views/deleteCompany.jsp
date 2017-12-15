@@ -35,6 +35,9 @@
 								<input type="submit" value="Delete !" class="btn btn-primary">
 								or <a href="dashboard" class="btn btn-default">Cancel</a>
 							</div>
+						<input type="hidden"
+							   name="${_csrf.parameterName}"
+							   value="${_csrf.token}"/>
 					</form>
 
 					<c:if test="${listComputer !=null}">
@@ -75,6 +78,9 @@
 								<input type="submit" value="Delete!" name="confirmation"
 									class="btn btn-danger"> or <a href="dashboard"
 									class="btn btn-default">Cancel</a>
+								<input type="hidden"
+									   name="${_csrf.parameterName}"
+									   value="${_csrf.token}"/>
 							</div>
 						</form>
 					</c:if>
