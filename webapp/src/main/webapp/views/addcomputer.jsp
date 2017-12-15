@@ -75,6 +75,9 @@
 							<a href="dashboard" class="btn btn-default"><spring:message
 									code="label.cancel" /></a>
 						</div>
+						<input type="hidden"
+							   name="${_csrf.parameterName}"
+							   value="${_csrf.token}"/>
 					</form:form>
 				</div>
 			</div>

@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -29,34 +29,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserService userService;
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(AuthenticationManagerBuilder auth) {
 		LOGGER.info("config secu auth");
 		auth.authenticationProvider(authenticationProvider());
 	}
 
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-		.authorizeRequests()
-		.antMatchers("/webapp/**").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.formLogin()
-		.and()
-		.httpBasic();
-	}
+        BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+        entryPoint.setRealmName("toto");
 
-	@Bean
-	public DigestAuthenticationEntryPoint digestEntryPoint() {
-		LOGGER.info("digest entry point");
-		DigestAuthenticationEntryPoint digestAuthenticationEntryPoint = new DigestAuthenticationEntryPoint();
-		digestAuthenticationEntryPoint.setKey("mykey");
-		digestAuthenticationEntryPoint.setRealmName("Digest WF Realm");
-		return digestAuthenticationEntryPoint;
-	}
+        http
+            .csrf().and()
+            .authorizeRequests()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .and()
+            .httpBasic().authenticationEntryPoint(entryPoint);
+    }
 
 	@Override
 	@Bean
-	public UserDetailsService userDetailsServiceBean() throws Exception {
+	public UserDetailsService userDetailsServiceBean() {
 		LOGGER.info("bean detail service");
 		return userService;
 	}

@@ -72,6 +72,9 @@
 							<input type="submit" value="${edit}" class="btn btn-primary">
 							<spring:message code="label.or" /> <a href="dashboard" class="btn btn-default"><spring:message code="label.cancel" /></a>
 						</div>
+						<input type="hidden"
+							   name="${_csrf.parameterName}"
+							   value="${_csrf.token}"/>
 					</form:form>
 				</div>
 			</div>
