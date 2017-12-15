@@ -102,7 +102,9 @@ $(document).keydown(function(e) {
 $(document).ready(function () {
 
     $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
+    	$('#sidebar').toggleClass('active');
+        $('#arrowSide').toggleClass("fa-angle-double-right fa-angle-double-left");
+        
     });
 
 });
