@@ -59,7 +59,7 @@
 								<tbody id="results">
 									<c:forEach items="${listComputer}" var="computer">
 										<tr>
-											<td>${computer.computerName}</td>
+											<td>${computer.name}</td>
 											<!-- Variable declarations for passing labels as parameters -->
 											<!-- Table header for Computer Name -->
 											<td>${computer.dateIntroduced}</td>
@@ -78,6 +78,7 @@
 								<input type="submit" value="Delete!" name="confirmation"
 									class="btn btn-danger"> or <a href="dashboard"
 									class="btn btn-default">Cancel</a>
+								<input type="hidden" name="companyId" value="${companyId}">
 								<input type="hidden"
 									   name="${_csrf.parameterName}"
 									   value="${_csrf.token}"/>
