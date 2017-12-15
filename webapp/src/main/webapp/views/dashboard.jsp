@@ -18,9 +18,9 @@
 
 
 
-	<div class="wrapper">
+	<div class="wrapper ">
 
-		<nav id="sidebar">
+		<nav id="sidebar" class="active">
 			<!-- Sidebar Header -->
 			<div class="sidebar-header">
 				<h3><spring:message code="label.whatToDoText"/></h3>
@@ -47,6 +47,7 @@
 								<input type="submit" name="searchBy" id="searchCompany"
 									value="&#xf1b2" class="btn btn-primary "></input> <span
 									class="tooltiptext">${searchByComputer}</span>
+
 							</div>
 							<input type="hidden" name="actionType" value="SEARCH">
 							<div class="hovercompany"></div>
@@ -67,6 +68,12 @@
 				</div>
 			</div>
 		</nav>
+		<div id="content">
+			<button type="button" id="sidebarCollapse" class="btn btn-info">
+				<i id="arrowSide" class="fa fa-angle-double-right fa-3x"></i>
+			</button>
+
+		</div>
 	</div>
 
 
@@ -75,27 +82,21 @@
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database 
-      			<div id="content">
-				<button type="button" id="sidebarCollapse"
-					class="btn btn-info navbar-btn">
-					<i class="glyphicon glyphicon-align-left"></i> Toggle Sidebar
-				</button>
-</a>
+				Database </a>
+
 
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			
+
 			<h2>
 				<c:out value="${messageAction}" />
 			</h2>
-			</div>
-		</div>
-	</header>
 
+		</div>
+	</section>
 	<section id="main">
 		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
@@ -103,7 +104,8 @@
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
-			<h1 id="homeTitle">
+
+      <h1 id="homeTitle">
 
 				<c:out value="${nombreComputers}" />
 				<spring:message code="label.computersFoundText"/>
@@ -139,9 +141,8 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer['id']}"></td>
-							<td><a
-								href="editcomputer?id=${computer.id}"
-								onclick=""><c:out value="${computer.name}" /></a></td>
+							<td><a href="editcomputer?id=${computer.id}" onclick=""><c:out
+										value="${computer.name}" /></a></td>
 							<td><c:out value="${computer['dateIntroduced']}" /></td>
 							<td><c:out value="${computer['dateDiscontinued']}" /></td>
 							<td><c:out value="${computer.companyName}" /></td>
@@ -184,8 +185,8 @@
 				</c:if>
 				<c:if test="${size != 10}">
 					<a href="dashboard?changeSize=1&size=10" type="button">
-						<button type="button"
-							class="btn btn-default">10</button>
+
+						<button type="button" class="btn btn-default">10</button>
 					</a>
 				</c:if>
 
@@ -223,6 +224,5 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/dashboard.js"></script>
-
 </body>
 </html>
