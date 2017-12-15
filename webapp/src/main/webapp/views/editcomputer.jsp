@@ -27,7 +27,7 @@
 						<c:out value="${computerDTO.id}" />
 
 					</div>
-					<h1>Edit Computer</h1>
+					<h1><spring:message code="label.edit" /></h1>
 					<h2>
 						<c:out value="${messageEdit}" />
 					</h2>
@@ -40,25 +40,25 @@
 							<form:input type="hidden" class="form-control" path="id"
 								value="${id}" />
 							<div class="form-group">
-								<label for="computerName">Computer name</label>
+								<label for="computerName"><spring:message code="label.computerName" /></label>
 								<form:input class="form-control" path="name" 
 									placeholder="Computer name" />
 								<form:errors class="errorForm" path="name" />
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label>
+								<label for="introduced"><spring:message code="label.dateIntroduced" /></label>
 								<form:input class="form-control" path="dateIntroduced"
 									placeholder="yyyy-MM-dd" />
 								<form:errors class="errorForm" path="dateIntroduced" />
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label>
+								<label for="discontinued"><spring:message code="label.dateDiscontinued" /></label>
 								<form:input class="form-control" path="dateDiscontinued"
 									placeholder="yyyy-MM-dd"  />
 								<form:errors class="errorForm" path="dateDiscontinued" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label>
+								<label for="companyId"><spring:message code="label.company" /></label>
 								<spring:message code="label.selectCompany" var="selectCompanyText"/>
 								<form:select path="companyId" class="form-control">
 									<form:option value="0" label="${selectCompanyText}" />
@@ -67,8 +67,10 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+						<spring:message code="label.editButton"
+									var="edit" />
+							<input type="submit" value="${edit}" class="btn btn-primary">
+							<spring:message code="label.or" /> <a href="dashboard" class="btn btn-default"><spring:message code="label.cancel" /></a>
 						</div>
 						<input type="hidden"
 							   name="${_csrf.parameterName}"
