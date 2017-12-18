@@ -12,14 +12,14 @@ public class Company {
 
 	@Id
     @Column(name = "id") 	
-	private int id;
+	private Long id;
 	private String name;
 	
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -31,13 +31,13 @@ public class Company {
 	
 	public Company(){}
 	
-	public Company(int id, String name) {
+	public Company(Long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 	
-	public Company(int id) {
+	public Company(Long id) {
 		super();
 		this.id = id;
 		this.name = "";

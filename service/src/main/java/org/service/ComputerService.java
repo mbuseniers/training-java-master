@@ -25,7 +25,7 @@ public class ComputerService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 
-	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
+	public boolean addComputer(String name, String introduced, String discontinued, Long company_id) {
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
 		if (company_id != 0) {
@@ -36,7 +36,7 @@ public class ComputerService {
 		return true;
 	}
 
-	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
+	public boolean editComputer(int id, String name, String introduced, String discontinued, Long company_id) {
 		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
 		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
 		if (company_id != 0) {
@@ -99,12 +99,12 @@ public class ComputerService {
 		return computerRepository.findByCompanyId(companyId);
 	}
 
-	public  void deleteComputerAndCompany(Long companyId) throws SQLException {
+	public  void deleteComputerAndCompany(Long companyId) {
 		companyService.deleteCompanyById(companyId);
 	}
 
 	
-	public LocalDate checkDateIsCorrect(String date) {
+	private LocalDate checkDateIsCorrect(String date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDate;
 

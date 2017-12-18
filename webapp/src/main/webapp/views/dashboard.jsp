@@ -40,14 +40,14 @@
 								<spring:message code="label.searchByCompany"
 									var="searchByCompany" />
 								<input type="submit" name="searchBy" id="searchComputer"
-									value="&#xf109" class="btn btn-primary" /><span
+									value="Filter by name" class="btn btn-primary" /><span
 									class="tooltiptext">${searchByCompany}</span>
 							</div>
 							<div class="tooltipMain">
 								<spring:message code="label.searchByComputer"
 									var="searchByComputer" />
 								<input type="submit" name="searchBy" id="searchCompany"
-									value="&#xf1b2" class="btn btn-primary "></input> <span
+									value="Filter by company" class="btn btn-primary "></input> <span
 									class="tooltiptext">${searchByComputer}</span>
 
 							</div>
