@@ -108,3 +108,12 @@ $(document).ready(function () {
     });
 
 });
+
+//toggleTopbar
+$(document).ready(function () {
+
+    $('#topButton').on('click', function () {
+        $('#actionsTop').toggleClass("wrapper-topbar-close wrapper-topbar-open");
+    });
+
+});
