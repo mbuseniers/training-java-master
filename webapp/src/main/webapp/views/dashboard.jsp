@@ -40,14 +40,14 @@
 								<spring:message code="label.searchByCompany"
 									var="searchByCompany" />
 								<input type="submit" name="searchBy" id="searchComputer"
-									value="Filter by name" class="btn btn-primary" /><span
+									value="&#xf109" class="btn btn-primary" /><span
 									class="tooltiptext">${searchByCompany}</span>
 							</div>
 							<div class="tooltipMain">
 								<spring:message code="label.searchByComputer"
 									var="searchByComputer" />
 								<input type="submit" name="searchBy" id="searchCompany"
-									value="Filter by company" class="btn btn-primary "></input> <span
+									value="&#xf1b2" class="btn btn-primary "></input> <span
 									class="tooltiptext">${searchByComputer}</span>
 
 							</div>
@@ -96,50 +96,50 @@
 			</div>
 
 		</div>
-		
-			<div id="actionsTop" class="form-horizontal  wrapper-topbar-close">
-				<div class="pull-left">
-					<form id="searchForm" action="dashboard" method="POST"
-						class="form-inline">
 
-						<input type="search" id="searchbox" name="search"
-							class="form-sidebar" placeholder="Search computer" /> <input
-							type="hidden" name="actionType" value="SEARCH">
-						<div class="tooltipMain">
-							<spring:message code="label.searchByCompany"
-								var="searchByCompany" />
-							<input type="submit" name="searchBy" id="searchComputer"
-								value="&#xf109" class="btn btn-primary" /><span
-								class="tooltiptext">${searchByCompany}</span>
-						</div>
-						<div class="tooltipMain">
-							<spring:message code="label.searchByComputer"
-								var="searchByComputer" />
-							<input type="submit" name="searchBy" id="searchCompany"
-								value="&#xf1b2" class="btn btn-primary "></input> <span
-								class="tooltiptext">${searchByComputer}</span>
+		<div id="actionsTop" class="form-horizontal  wrapper-topbar-close">
+			<div class="pull-left">
+				<form id="searchForm" action="dashboard" method="POST"
+					class="form-inline">
 
-						</div>
-						<input type="hidden" name="actionType" value="SEARCH">
-						<div class="hovercompany"></div>
+					<input type="search" id="searchbox" name="search"
+						class="form-sidebar" placeholder="Search computer" /> <input
+						type="hidden" name="actionType" value="SEARCH">
+					<div class="tooltipMain">
+						<%-- 							<spring:message code="label.searchByCompany" --%>
+						<%-- 								var="searchByCompany" /> --%>
+						<input type="submit" name="searchBy" id="searchComputer"
+							value="&#xf109" class="btn btn-primary" /><span
+							class="tooltiptext">${searchByCompany}</span>
+					</div>
+					<div class="tooltipMain">
+						<%-- 							<spring:message code="label.searchByComputer" --%>
+						<%-- 								var="searchByComputer" /> --%>
+						<input type="submit" name="searchBy" id="searchCompany"
+							value="&#xf1b2" class="btn btn-primary "></input> <span
+							class="tooltiptext">${searchByComputer}</span>
 
-						<div class="hovercomputer"></div>
+					</div>
+					<input type="hidden" name="actionType" value="SEARCH">
+					<div class="hovercompany"></div>
+
+					<div class="hovercomputer"></div>
 
 
-						<input type="hidden" name="${_csrf.parameterName}"
-							value="${_csrf.token}" />
-					</form>
-				</div>
-				<div>
-					<a class="btn btn-success btn-sidebar" id="addComputer"
-						href="addcomputer"><spring:message code="label.addButton" /></a>
-					<a class="btn btn-default btn-sidebar" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();"><spring:message
-							code="label.editButton" /></a> <a
-						class="btn btn-warning btn-sidebar" id="deleteCompany"
-						href="deleteCompany"><spring:message code="label.deleteButton" /></a>
-				</div>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</form>
 			</div>
+			<div>
+				<a class="btn btn-success btn-sidebar" id="addComputer"
+					href="addcomputer"><spring:message code="label.addButton" /></a> <a
+					class="btn btn-default btn-sidebar" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"><spring:message
+						code="label.editButton" /></a> <a class="btn btn-warning btn-sidebar"
+					id="deleteCompany" href="deleteCompany"><spring:message
+						code="label.deleteButton" /></a>
+			</div>
+		</div>
 	</header>
 
 
