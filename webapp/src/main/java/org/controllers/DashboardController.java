@@ -92,6 +92,7 @@ public class DashboardController {
 	@PostMapping("/deletecomputers")
 	public String deleteComputers(@RequestParam("selection") String selection, ModelMap model) {
 		LOGGER.info("DELETE CPT");
+		computerService.deleteComputer(selection);
 		LOGGER.info("redirect dashboard DELETE OK");
 		return "redirect:/dashboard";
 

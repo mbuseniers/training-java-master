@@ -39,14 +39,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
         entryPoint.setRealmName("toto");
 
-        http
-            .csrf().and()
-            .authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .and()
-            .httpBasic().authenticationEntryPoint(entryPoint);
+        http.csrf()
+
+        // Droits de l'utilisateur
+        .and().authorizeRequests()
+        .antMatchers("/dashboard", "/css/**", "/js/**", "/fonts/**")
+        .authenticated()
+
+        // Droits du modérateur
+        .antMatchers("/addcomputer",
+                                "/editcomputer",
+                                "/deletecomputers")
+        .hasAuthority("moderator")
+
+        // Droits de l'administrateur
+        .antMatchers("/deleteCompany")
+        .hasAuthority("admin")
+
+        .and()
+        .formLogin()
+        .and()
+        .httpBasic().authenticationEntryPoint(entryPoint);
     }
 
 	@Override
