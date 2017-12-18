@@ -23,7 +23,9 @@
 		<nav id="sidebar" class="active">
 			<!-- Sidebar Header -->
 			<div class="sidebar-header">
-				<h3><spring:message code="label.whatToDoText"/></h3>
+				<h3>
+					<spring:message code="label.whatToDoText" />
+				</h3>
 			</div>
 			<div class="container-sidebar">
 				<div id="actions" class="form-horizontal">
@@ -42,7 +44,7 @@
 									class="tooltiptext">${searchByCompany}</span>
 							</div>
 							<div class="tooltipMain">
-							<spring:message code="label.searchByComputer"
+								<spring:message code="label.searchByComputer"
 									var="searchByComputer" />
 								<input type="submit" name="searchBy" id="searchCompany"
 									value="Filter by company" class="btn btn-primary "></input> <span
@@ -55,18 +57,19 @@
 							<div class="hovercomputer"></div>
 
 
-							<input type="hidden"
-								   name="${_csrf.parameterName}"
-								   value="${_csrf.token}"/>
+							<input type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
 						</form>
 					</div>
 					<div>
 						<a class="btn btn-success btn-sidebar" id="addComputer"
-							href="addcomputer"><spring:message code="label.addButton"/></a> <a
-							class="btn btn-default btn-sidebar" id="editComputer" href="#"
-							onclick="$.fn.toggleEditMode();"><spring:message code="label.editButton"/></a> <a
+							href="addcomputer"><spring:message code="label.addButton" /></a>
+						<a class="btn btn-default btn-sidebar" id="editComputer" href="#"
+							onclick="$.fn.toggleEditMode();"><spring:message
+								code="label.editButton" /></a> <a
 							class="btn btn-warning btn-sidebar" id="deleteCompany"
-							href="deleteCompany"><spring:message code="label.deleteButton"/></a> <img
+							href="deleteCompany"><spring:message
+								code="label.deleteButton" /></a> <img
 							src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif"
 							class="flaming">
 					</div>
@@ -93,6 +96,11 @@
 		</div>
 	</header>
 
+
+	<div id="snackbar" value="${messageAction}">
+		<c:out value="${messageAction}" />
+	</div>
+
 	<section id="main">
 		<div class="container">
 
@@ -105,18 +113,16 @@
 	<section id="main">
 		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
-				type="hidden" name="actionType" value="DELETE">
-			<input type="hidden"
-				   name="${_csrf.parameterName}"
-				   value="${_csrf.token}"/>
+				type="hidden" name="actionType" value="DELETE"> <input
+				type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
 
-      <h1 id="homeTitle">
+			<h1 id="homeTitle">
 
 				<c:out value="${nombreComputers}" />
-				<spring:message code="label.computersFoundText"/>
+				<spring:message code="label.computersFoundText" />
 
 			</h1>
 			<table class="table table-striped table-bordered">
@@ -132,10 +138,10 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><spring:message code="label.computerName"/></th>
-						<th><spring:message code="label.dateIntroduced"/></th>
-						<th><spring:message code="label.dateDiscontinued"/></th>
-						<th><spring:message code="label.company"/></th>
+						<th><spring:message code="label.computerName" /></th>
+						<th><spring:message code="label.dateIntroduced" /></th>
+						<th><spring:message code="label.dateDiscontinued" /></th>
+						<th><spring:message code="label.company" /></th>
 
 					</tr>
 				</thead>
