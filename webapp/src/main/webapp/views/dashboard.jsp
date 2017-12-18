@@ -40,14 +40,14 @@
 								<spring:message code="label.searchByCompany"
 									var="searchByCompany" />
 								<input type="submit" name="searchBy" id="searchComputer"
-									value="&#xf109" class="btn btn-primary" /><span
+									value="Filter by name" class="btn btn-primary" /><span
 									class="tooltiptext">${searchByCompany}</span>
 							</div>
 							<div class="tooltipMain">
 								<spring:message code="label.searchByComputer"
 									var="searchByComputer" />
 								<input type="submit" name="searchBy" id="searchCompany"
-									value="&#xf1b2" class="btn btn-primary "></input> <span
+									value="Filter by company" class="btn btn-primary "></input> <span
 									class="tooltiptext">${searchByComputer}</span>
 
 							</div>
@@ -142,6 +142,11 @@
 			</div>
 	</header>
 
+
+	<div id="snackbar" value="${messageAction}">
+		<c:out value="${messageAction}" />
+	</div>
+
 	<section id="main">
 		<div class="container">
 
@@ -155,7 +160,7 @@
 		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
 				type="hidden" name="actionType" value="DELETE"> <input
-				type="hidden" value="${_csrf.token}" />
+				type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		</form>
 
 		<div class="container" style="margin-top: 10px;">

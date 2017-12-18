@@ -1,13 +1,5 @@
 package org.service;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
 import org.core.model.Company;
 import org.persistence.CompanyRepository;
 import org.persistence.ComputerRepository;
@@ -15,6 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("companyService")
 @EnableJpaRepositories(basePackages = "org.persistence")
@@ -31,8 +29,8 @@ public class CompanyService {
 		return (ArrayList<Company>) companyRepository.findAll();
 	}
 
-	public Map<Integer, String> getMapCompanies() {
-		Map<Integer, String> map = new LinkedHashMap<Integer, String>();
+	public Map<Long, String> getMapCompanies() {
+		Map<Long, String> map = new LinkedHashMap<>();
 
 		List<Company> listCompanies = companyRepository.findAll();
 		
@@ -48,7 +46,7 @@ public class CompanyService {
 	}
 
 	 @Transactional(rollbackOn=Exception.class)
-	 public boolean deleteCompanyById(long id) throws SQLException {
+	 public boolean deleteCompanyById(long id) {
 		computerRepository.deleteComputersByCompanyId(id);
 		companyRepository.deleteById(id);
 		return true;
