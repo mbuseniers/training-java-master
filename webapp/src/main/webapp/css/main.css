@@ -70,10 +70,11 @@ a, a:hover, a:focus {
 }
 
 #sidebar {
-	background: #7386D5;
+	background: #c9c9c9;
 	color: #fff;
 	transition: all 0.3s;
-	border: 1px solid transparent; border-radius : 10px;
+	border: 1px solid transparent;
+	border-radius: 10px;
 	min-width: 250px;
 	max-width: 250px;
 	border-radius: 10px;
@@ -81,7 +82,7 @@ a, a:hover, a:focus {
 
 #sidebar .sidebar-header {
 	padding: 20px;
-	background: #6d7fcc;
+	background: #c9c9c9;
 	border: 1px solid transparent;
 	border-radius: 10px;
 }
@@ -103,24 +104,24 @@ a, a:hover, a:focus {
 }
 
 #sidebar ul li a:hover {
-	color: #7386D5;
+	color: #c9c9c9;
 	background: #fff;
 }
 
 #sidebar ul li.active>a, a[aria-expanded="true"] {
 	color: #fff;
-	background: #6d7fcc;
+	background: #c9c9c9;
 }
 
 ul ul a {
 	font-size: 0.9em !important;
 	padding-left: 30px !important;
-	background: #6d7fcc;
+	background: #c9c9c9;
 }
 
 .btn-sidebar {
 	margin-bottom: 2px;
-	width: 130px;
+	width: 165px;
 }
 
 .container-sidebar {
@@ -134,12 +135,21 @@ ul ul a {
 input {
 	font-family: 'FontAwesome';
 } /* This is for the placeholder */
-
 .form-sidebar {
 	display: inline-block;
 	vertical-align: middle;
 	width: 150px;
 	color: black;
+}
+
+.wrapper-sidebar {
+	opacity: 0.2;
+	transition: 0.5s;
+}
+
+.wrapper-sidebar:hover {
+	opacity: 1;
+	transition: 0.5s;
 }
 
 .hovercompany {
@@ -148,6 +158,22 @@ input {
 
 .wrapperCompany {
 	width: -moz-fit-content;
+}
+
+.wrapper-topbar-close {
+	height: 0px;
+	width: 100%;
+	z-index: 1;
+	overflow-y: hidden;
+	transition: 0.5s;
+}
+
+.wrapper-topbar-open {
+	display: inline;
+	width: 100%;
+	z-index: 1;
+	overflow-y: hidden;
+	transition: 0.5s;
 }
 
 .wrapperCompany:hover ~ .hovercompany {
@@ -166,55 +192,53 @@ input {
 	display: block;
 }
 
-
 .flaming {
- display: none;
+	display: none;
 }
 
 #deleteCompany:hover ~ .flaming {
 	display: block;
 	position: absolute;
 	z-index: 999;
-	margin-left:750px;
-	
+	margin-left: 750px;
 }
 
 .tooltipMain {
-    position: relative;
-    display: inline-block;
+	position: relative;
+	display: inline-block;
 }
 
 .tooltipMain .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 1s;
+	visibility: hidden;
+	width: 120px;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -60px;
+	opacity: 0;
+	transition: opacity 1s;
 }
 
 .tooltipMain .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
 }
 
 .tooltipMain:hover  .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+	visibility: visible;
+	opacity: 1;
 }
 
 .errorForm {
@@ -222,6 +246,29 @@ input {
 	font-weight: 800;
 }
 
+.menuButton {
+	font-size: 30px;
+	cursor: pointer;
+	float: right;
+	color: white;
+	position: relative;
+	display: none;
+}
+
+@media screen and (max-width: 900px) {
+	.wrapper-sidebar {
+		display: none;
+	}
+	.menuButton {
+		display: inline;
+	}
+}
+
+@media screen and (min-width: 900px) {
+	#actionsTop {
+		display: none;
+	}
+}
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
     min-width: 250px; /* Set a default minimum width */

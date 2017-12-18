@@ -121,6 +121,15 @@ function myFunction() {
 		setTimeout(function() {
 			x.className = x.className.replace("show", "");
 		}, 3000);
-
 	}
 }
+
+
+//toggleTopbar
+$(document).ready(function () {
+
+    $('#topButton').on('click', function () {
+        $('#actionsTop').toggleClass("wrapper-topbar-close wrapper-topbar-open");
+    });
+
+});
