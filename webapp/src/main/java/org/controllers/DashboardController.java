@@ -1,12 +1,11 @@
 package org.controllers;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.core.dto.ComputerDTO;
@@ -19,26 +18,19 @@ import org.service.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class DashboardController {
@@ -60,6 +52,10 @@ public class DashboardController {
 	@Autowired
 	private ComputerValidator computerValidator;
 
+	@Autowired
+	private MessageSource messageSource;
+	
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	
@@ -85,19 +81,31 @@ public class DashboardController {
 	public String searchComputers(@RequestParam("searchBy") String searchBy, @RequestParam("search") String search,
 			ModelMap model) {
 		LOGGER.info("doPost servlet dashboard");
+		LOGGER.info(searchBy);
+		LOGGER.info("Resultat ? " +searchBy.equals("&#61705;"));
+		LOGGER.info("Resultat ? " +searchBy.equals("&#61874;"));
+		LOGGER.info("Resultat ? " +searchBy.equals(" &#61705;"));
+		LOGGER.info("Resultat ? " +searchBy.equals("&#61705; "));
+
 		ArrayList<ComputerDTO> listComputersDTO;
 		ArrayList<Computer> listComputers = null;
 		int page = 0, size, intervalMin, intervalMax;
 		int nombreComputers;
 		if (!search.equals("")) {
 
-			if (searchBy.equals("Filter by name")) {
+			if (searchBy.equals("&#61705;")) {
 				LOGGER.info("SEARCH by name");
 				listComputers = computerService.getComputersByName(search);
-			} else if (searchBy.equals("Filter by company")) {
+			} else if (searchBy.equals("&#61874;")) {
 				LOGGER.info("SEARCH by company");
 				listComputers = computerService.getComputersByCompanyName(search);
+			}else {
+
+				model.addAttribute("messageAction","message.searchError");
+				return "redirect:/dashboard";
 			}
+			
+			
 			listComputersDTO = computerMapper.ComputersToComputersDTO(listComputers);
 
 			size = 100;
@@ -105,7 +113,8 @@ public class DashboardController {
 			intervalMax = 0;
 			nombreComputers = listComputersDTO.size();
 		} else {
-			model.addAttribute("messageErreurSearch", "La recherche ne peut être nulle");
+
+			model.addAttribute("messageAction","message.searchKO");
 			return "redirect:/dashboard";
 		}
 		model.addAttribute("liste", listComputersDTO);
@@ -121,7 +130,8 @@ public class DashboardController {
 	public String deleteComputers(@RequestParam("selection") String selection, ModelMap model) {
 		LOGGER.info("DELETE CPT");
 		LOGGER.info("redirect dashboard DELETE OK");
-		model.addAttribute("messageAction","Computer Deleted");
+		
+		model.addAttribute("messageAction","message.deleteComputerOK");
 		return "redirect:/dashboard";
 
 	}
@@ -148,7 +158,8 @@ public class DashboardController {
 			computerService.addComputer(computerDTO.getName(), computerDTO.getDateIntroduced(),
 					computerDTO.getDateDiscontinued(), computerDTO.getCompanyId());
 			LOGGER.info("redirect dashboard ADD OK");
-			model.addAttribute("messageAction","Computer Added");
+
+			model.addAttribute("messageAction","message.addComputerOK");
 			return "redirect:dashboard";
 		}
 
@@ -166,7 +177,7 @@ public class DashboardController {
 			optionalComputer = computerService.getComputersById(Integer.parseInt(id));
 		}catch(NumberFormatException e) {	
 			LOGGER.info("redirect dashboard FORMAT EXCEPTION");
-			model.addAttribute("messageAction","Computer Not Found");
+			model.addAttribute("messageAction","message.editComputerKO");
 			return "redirect:/dashboard";
 		}
 		
@@ -177,7 +188,7 @@ public class DashboardController {
 			return "editcomputer";
 		}else {
 			LOGGER.info("redirect dashboard COMPUTER NOT FOUND");
-			model.addAttribute("messageAction","Computer Not Found");
+			model.addAttribute("messageAction","message.editComputerKO");
 			return "redirect:/dashboard";
 		}
 	}
@@ -197,7 +208,7 @@ public class DashboardController {
 					computerDTO.getDateIntroduced(), computerDTO.getDateDiscontinued(),
 					computerDTO.getCompanyId());
 			LOGGER.info("redirect dashboard EDIT OK");
-			model.addAttribute("messageAction","Computer Edited");
+			model.addAttribute("messageAction","message.editComputerOK");
 			return "redirect:/dashboard";
 		}
 	}
@@ -213,7 +224,7 @@ public class DashboardController {
 
 	
 	@PostMapping("/deleteCompany")
-	protected ModelAndView postDelete( @RequestParam Map<String, String> parameters){
+	protected ModelAndView postDelete( @RequestParam Map<String, String> parameters, ModelMap model){
 		ModelAndView modelAndView = new ModelAndView("/deleteCompany");
 		String confirmation = parameters.get("confirmation");
 		if(confirmation==null) {
@@ -229,6 +240,7 @@ public class DashboardController {
 		}else if(confirmation.equals("Delete!")) {
 			Long companyId = Long.valueOf(parameters.get("companyId"));
 			computerService.deleteComputerAndCompany(companyId);
+			model.addAttribute("messageAction","message.deleteCompanyOK");
 			return new ModelAndView("redirect:/dashboard");
 		}
 		return modelAndView;

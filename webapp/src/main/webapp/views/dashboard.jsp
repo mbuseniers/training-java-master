@@ -37,18 +37,19 @@
 								class="form-sidebar" placeholder="Search computer" /> <input
 								type="hidden" name="actionType" value="SEARCH">
 							<div class="tooltipMain">
-								<spring:message code="label.searchByCompany"
-									var="searchByCompany" />
-								<input type="submit" name="searchBy" id="searchComputer"
-									value="&#xf109" class="btn btn-primary" /><span
-									class="tooltiptext">${searchByCompany}</span>
-							</div>
-							<div class="tooltipMain">
+
 								<spring:message code="label.searchByComputer"
 									var="searchByComputer" />
+								<input type="submit" name="searchBy" id="searchComputer"
+									value="&#xf109" class="btn btn-primary" /><span
+									class="tooltiptext">${searchByComputer}</span>
+							</div>
+							<div class="tooltipMain">
+								<spring:message code="label.searchByCompany"
+									var="searchByCompany" />
 								<input type="submit" name="searchBy" id="searchCompany"
 									value="&#xf1b2" class="btn btn-primary "></input> <span
-									class="tooltiptext">${searchByComputer}</span>
+									class="tooltiptext">${searchByCompany}</span>
 
 							</div>
 							<input type="hidden" name="actionType" value="SEARCH">
@@ -110,14 +111,15 @@
 						<%-- 								var="searchByCompany" /> --%>
 						<input type="submit" name="searchBy" id="searchComputer"
 							value="&#xf109" class="btn btn-primary" /><span
-							class="tooltiptext">${searchByCompany}</span>
+							class="tooltiptext">${searchByComputer}</span>
+
 					</div>
 					<div class="tooltipMain">
 						<%-- 							<spring:message code="label.searchByComputer" --%>
 						<%-- 								var="searchByComputer" /> --%>
 						<input type="submit" name="searchBy" id="searchCompany"
 							value="&#xf1b2" class="btn btn-primary "></input> <span
-							class="tooltiptext">${searchByComputer}</span>
+							class="tooltiptext">${searchByCompany}</span>
 
 					</div>
 					<input type="hidden" name="actionType" value="SEARCH">
@@ -143,18 +145,16 @@
 	</header>
 
 
-	<div id="snackbar" value="${messageAction}">
-		<c:out value="${messageAction}" />
+	<c:if test="${not empty messageAction}">
+		<spring:message code="${messageAction}" var="message" />
+	</c:if>
+
+	<div id="snackbar" value="${message}">
+		<c:out value="${message}" />
 	</div>
 
 	<section id="main">
-		<div class="container">
-
-			<h2>
-				<c:out value="${messageAction}" />
-			</h2>
-
-		</div>
+		<div class="container"></div>
 	</section>
 	<section id="main">
 		<form id="deleteForm" action="deletecomputers" method="POST">
