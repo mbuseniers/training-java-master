@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/addcomputer",
                                 "/editcomputer",
                                 "/deletecomputers")
-        .hasAuthority("moderator")
+        .hasAnyAuthority("moderator", "admin")
 
         // Droits de l'administrateur
         .antMatchers("/deleteCompany")
