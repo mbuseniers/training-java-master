@@ -254,6 +254,12 @@ input {
 	position: relative;
 	display: none;
 }
+.logOutButton {
+	top:10px;
+	cursor: pointer;
+	float: right;
+	position: relative;
+}
 
 @media screen and (max-width: 900px) {
 	.wrapper-sidebar {

@@ -73,9 +73,6 @@
 								code="label.deleteButton" /></a> <img
 							src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif"
 							class="flaming">
-                        <a class="btn btn-danger" id="logout" href="logout">
-                            <spring:message code="label.logoutButton" />
-                        </a>
 					</div>
 				</div>
 			</div>
@@ -96,7 +93,10 @@
 		<div class="container">
 			<div>
 				<a class="navbar-brand" href="dashboard"> Application - Computer
-					Database </a> <span class="menuButton" id="topButton">&#9776;</span>
+					Database </a> <span class="menuButton" id="topButton">&#9776;</span> <a
+					class="btn btn-danger logOutButton" id="logout" href="logout"> <spring:message
+						code="label.logoutButton" />
+				</a>
 			</div>
 
 		</div>
@@ -136,18 +136,14 @@
 				</form>
 			</div>
 			<div>
-				<a class="btn btn-success btn-sidebar" id="addComputer" href="addcomputer">
-                    <spring:message code="label.addButton" />
-                </a>
-                <a class="btn btn-default btn-sidebar" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">
-                    <spring:message code="label.editButton" />
-                </a>
-                <a class="btn btn-warning btn-sidebar" id="deleteCompany" href="deleteCompany">
-                    <spring:message code="label.deleteButton" />
-                </a>
-                <a class="btn btn-danger" id="logout" href="logout" >
-                    <spring:message code="label.logoutButton" />
-                </a>
+				<a class="btn btn-success btn-sidebar" id="addComputer"
+					href="addcomputer"> <spring:message code="label.addButton" />
+				</a> <a class="btn btn-default btn-sidebar" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"> <spring:message
+						code="label.editButton" />
+				</a> <a class="btn btn-warning btn-sidebar" id="deleteCompany"
+					href="deleteCompany"> <spring:message code="label.deleteButton" />
+				</a>
 			</div>
 		</div>
 	</header>
@@ -287,6 +283,7 @@
 
 			</div>
 		</div>
+
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
