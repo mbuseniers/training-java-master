@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -39,14 +40,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
         entryPoint.setRealmName("toto");
 
-        http
-            .csrf().and()
-            .authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .and()
-            .httpBasic().authenticationEntryPoint(entryPoint);
+        http.csrf()
+
+        // Droits de l'utilisateur
+        .and().authorizeRequests()
+        .antMatchers("/dashboard", "/css/**", "/js/**", "/fonts/**")
+        .authenticated()
+
+        // Droits du modérateur
+        .antMatchers("/addcomputer",
+                                "/editcomputer",
+                                "/deletecomputers")
+        .hasAuthority("moderator")
+
+        // Droits de l'administrateur
+        .antMatchers("/deleteCompany")
+        .hasAuthority("admin")
+
+        .and()
+        .formLogin()
+
+        .and()
+        .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+
+        .and()
+        .httpBasic().authenticationEntryPoint(entryPoint);
     }
 
 	@Override
