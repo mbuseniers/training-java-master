@@ -22,7 +22,7 @@ public class ComputerMapper {
 		try {
 			while (rs.next()) {
 				listComputers.add(new ComputerDTO(rs.getInt(1), rs.getString(2), convertDateToString(rs.getDate(3)),
-						convertDateToString(rs.getDate(4)), rs.getInt(5), rs.getString(7)));
+						convertDateToString(rs.getDate(4)), rs.getLong(5), rs.getString(7)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +35,7 @@ public class ComputerMapper {
 		ComputerDTO cpDTO = null;
 		try {
 			cpDTO = new ComputerDTO(rs.getInt(1), rs.getString(2), convertDateToString(rs.getDate(3)),
-					convertDateToString(rs.getDate(4)), rs.getInt(5), rs.getString(7));
+					convertDateToString(rs.getDate(4)), rs.getLong(5), rs.getString(7));
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -54,16 +54,22 @@ public class ComputerMapper {
 		return listComputers;
 
 	}
+	
+	public ComputerDTO ComputerToComputerDTO(Computer computer) {
+		return new ComputerDTO(computer.getId(), computer.getName(),
+				convertLocalDateToString(computer.getDateIntroduced()), convertLocalDateToString(computer.getDateDiscontinued()),
+				getCompanyId(computer.getCompany()), getCompanyName(computer.getCompany()));
+	}
 
-	public int getCompanyId(Company company) {
+	private Long getCompanyId(Company company) {
 		if(company == null) {
-			return 0;
+			return 0L;
 		}else {
 			return company.getId();
 		}
 	}
 	
-	public String getCompanyName(Company company) {
+	private String getCompanyName(Company company) {
 		if(company == null) {
 			return "";
 		}else {
@@ -71,7 +77,7 @@ public class ComputerMapper {
 		}
 	}
 	
-	public String convertLocalDateToString(LocalDate date) {
+	private String convertLocalDateToString(LocalDate date) {
 		if (date == null) {
 			return "";
 		} else {
@@ -79,7 +85,7 @@ public class ComputerMapper {
 		}
 	}
 	
-	public String convertDateToString(Date date) {
+	private String convertDateToString(Date date) {
 		if (date == null) {
 			return "";
 		} else {

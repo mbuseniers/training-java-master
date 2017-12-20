@@ -1,4 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags/form"
+	prefix="springForm"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,51 +15,166 @@
 <link href="css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
+
+
+
+	<div class="wrapper wrapper-sidebar ">
+
+		<nav id="sidebar" class="active">
+			<!-- Sidebar Header -->
+			<div class="sidebar-header">
+				<h3>
+					<spring:message code="label.whatToDoText" />
+				</h3>
+			</div>
+			<div class="container-sidebar">
+				<div id="actions" class="form-horizontal">
+					<div class="pull-left">
+						<form id="searchForm" action="dashboard" method="POST"
+							class="form-inline">
+
+							<input type="search" id="searchbox" name="search"
+								class="form-sidebar" placeholder="Search computer" /> <input
+								type="hidden" name="actionType" value="SEARCH">
+							<div class="tooltipMain">
+
+								<spring:message code="label.searchByComputer"
+									var="searchByComputer" />
+								<input type="submit" name="searchBy" id="searchComputer"
+									value="&#xf109" class="btn btn-primary" /><span
+									class="tooltiptext">${searchByComputer}</span>
+							</div>
+							<div class="tooltipMain">
+								<spring:message code="label.searchByCompany"
+									var="searchByCompany" />
+								<input type="submit" name="searchBy" id="searchCompany"
+									value="&#xf1b2" class="btn btn-primary "></input> <span
+									class="tooltiptext">${searchByCompany}</span>
+
+							</div>
+							<input type="hidden" name="actionType" value="SEARCH">
+							<div class="hovercompany"></div>
+
+							<div class="hovercomputer"></div>
+
+
+							<input type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
+						</form>
+					</div>
+					<div>
+						<a class="btn btn-success btn-sidebar" id="addComputer"
+							href="addcomputer"><spring:message code="label.addButton" /></a>
+						<a class="btn btn-default btn-sidebar" id="editComputer" href="#"
+							onclick="$.fn.toggleEditMode();"><spring:message
+								code="label.editButton" /></a> <a
+							class="btn btn-warning btn-sidebar" id="deleteCompany"
+							href="deleteCompany"><spring:message
+								code="label.deleteButton" /></a> <img
+							src="http://gifimage.net/wp-content/uploads/2017/09/animated-fire-gif-transparent-background-1.gif"
+							class="flaming">
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div id="content">
+			<button type="button" id="sidebarCollapse"
+				class="btn btn-info testDisappear">
+				<i id="arrowSide" class="fa fa-angle-double-right fa-3x"></i>
+			</button>
+
+		</div>
+	</div>
+
+
+
+
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<div>
+				<a class="navbar-brand" href="dashboard"> Application - Computer
+					Database </a> <span class="menuButton" id="topButton">&#9776;</span> <a
+					class="btn btn-danger logOutButton" id="logout" href="logout"> <spring:message
+						code="label.logoutButton" />
+				</a>
+			</div>
+
+		</div>
+
+		<div id="actionsTop" class="form-horizontal  wrapper-topbar-close">
+			<div class="pull-left">
+				<form id="searchForm" action="dashboard" method="POST"
+					class="form-inline">
+
+					<input type="search" id="searchbox" name="search"
+						class="form-sidebar" placeholder="Search computer" /> <input
+						type="hidden" name="actionType" value="SEARCH">
+					<div class="tooltipMain">
+						<%-- 							<spring:message code="label.searchByCompany" --%>
+						<%-- 								var="searchByCompany" /> --%>
+						<input type="submit" name="searchBy" id="searchComputer"
+							value="&#xf109" class="btn btn-primary" /><span
+							class="tooltiptext">${searchByComputer}</span>
+
+					</div>
+					<div class="tooltipMain">
+						<%-- 							<spring:message code="label.searchByComputer" --%>
+						<%-- 								var="searchByComputer" /> --%>
+						<input type="submit" name="searchBy" id="searchCompany"
+							value="&#xf1b2" class="btn btn-primary "></input> <span
+							class="tooltiptext">${searchByCompany}</span>
+
+					</div>
+					<input type="hidden" name="actionType" value="SEARCH">
+					<div class="hovercompany"></div>
+
+					<div class="hovercomputer"></div>
+
+
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</form>
+			</div>
+			<div>
+				<a class="btn btn-success btn-sidebar" id="addComputer"
+					href="addcomputer"> <spring:message code="label.addButton" />
+				</a> <a class="btn btn-default btn-sidebar" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"> <spring:message
+						code="label.editButton" />
+				</a> <a class="btn btn-warning btn-sidebar" id="deleteCompany"
+					href="deleteCompany"> <spring:message code="label.deleteButton" />
+				</a>
+			</div>
 		</div>
 	</header>
 
+
+	<c:if test="${not empty messageAction}">
+		<spring:message code="${messageAction}" var="message" />
+	</c:if>
+
+	<div id="snackbar" value="${message}">
+		<c:out value="${message}" />
+	</div>
+
 	<section id="main">
-		<div class="container">
-			<h1 id="homeTitle">
-
-				<c:out value="${nombreComputers}" />
-				Computers found
-			</h1>
-			<h2>
-				<c:out value="${messageDelete}" />
-			</h2>
-			<h2>
-				<c:out value="${messageErreurSearch}" />
-			</h2>
-			<div id="actions" class="form-horizontal">
-				<div class="pull-left">
-					<form id="searchForm" action="dashboard" method="POST" class="form-inline">
-
-						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
-						<input type="hidden" name="actionType" value="SEARCH">
-						<input type="submit" name="searchBy" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
-						<input type="submit" name="searchBy" id="searchsubmit" style = "margin-left : 5px;" value="Filter by company" class="btn btn-primary" /> 
-						<input type="hidden" name="actionType" value="SEARCH">
-					</form>
-				</div>
-				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addcomputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
-				</div>
-			</div>
-		</div>
-
+		<div class="container"></div>
+	</section>
+	<section id="main">
 		<form id="deleteForm" action="deletecomputers" method="POST">
 			<input type="hidden" name="selection" value=""> <input
-				type="hidden" name="actionType" value="DELETE">
+				type="hidden" name="actionType" value="DELETE"> <input
+				type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
+
+			<h1 id="homeTitle">
+
+				<c:out value="${nombreComputers}" />
+				<spring:message code="label.computersFoundText" />
+
+			</h1>
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
@@ -69,10 +188,10 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<th>Discontinued date</th>
-						<th>Company</th>
+						<th><spring:message code="label.computerName" /></th>
+						<th><spring:message code="label.dateIntroduced" /></th>
+						<th><spring:message code="label.dateDiscontinued" /></th>
+						<th><spring:message code="label.company" /></th>
 
 					</tr>
 				</thead>
@@ -86,13 +205,11 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer['id']}"></td>
-							<td><a
-								href="editcomputer?id=${computer['id']}&name=${computer['name']}&introduced=${computer['dateIntroduced']}&discontinued=${computer['dateDiscontinued']}&company=${computer.companyId}"
-								onclick=""><c:out value="${computer.name}" /></a></td>
+							<td><a href="editcomputer?id=${computer.id}" onclick=""><c:out
+										value="${computer.name}" /></a></td>
 							<td><c:out value="${computer['dateIntroduced']}" /></td>
 							<td><c:out value="${computer['dateDiscontinued']}" /></td>
 							<td><c:out value="${computer.companyName}" /></td>
-
 						</tr>
 					</c:forEach>
 
@@ -151,25 +268,25 @@
 
 
 				<c:if test="${size == 100}">
-					<a href="dashboard?changeSize&size=100" type="button">
+					<a href="dashboard?changeSize=1&size=100" type="button">
 						<button style="color: white; background-color: #337ab7;"
 							type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>
 
 				<c:if test="${size != 100}">
-					<a href="dashboard?changeSize&size=100" type="button">
+					<a href="dashboard?changeSize=1&size=100" type="button">
 						<button type="button" class="btn btn-default">100</button>
 					</a>
 				</c:if>
 
 
-
 			</div>
+		</div>
+
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/dashboard.js"></script>
-
 </body>
 </html>

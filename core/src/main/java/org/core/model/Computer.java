@@ -27,7 +27,6 @@ public class Computer {
 	
 	
 	public int getId() {
-	      System.out.println("Your ID : " + id);
 		return id;
 	}
 	public void setId(int id) {

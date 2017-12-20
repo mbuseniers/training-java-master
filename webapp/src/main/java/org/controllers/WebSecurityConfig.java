@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -30,23 +30,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserService userService;
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(AuthenticationManagerBuilder auth) {
 		LOGGER.info("config secu auth");
 		auth.authenticationProvider(authenticationProvider());
 	}
 
-	@Bean
-	public DigestAuthenticationEntryPoint digestEntryPoint() {
-		LOGGER.info("digest entry point");
-		DigestAuthenticationEntryPoint digestAuthenticationEntryPoint = new DigestAuthenticationEntryPoint();
-		digestAuthenticationEntryPoint.setKey("mykey");
-		digestAuthenticationEntryPoint.setRealmName("Digest WF Realm");
-		return digestAuthenticationEntryPoint;
-	}
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+        BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+        entryPoint.setRealmName("toto");
+
+        http.csrf()
+
+        // Droits de l'utilisateur
+        .and().authorizeRequests()
+        .antMatchers("/dashboard", "/css/**", "/js/**", "/fonts/**")
+        .authenticated()
+
+        // Droits du modérateur
+        .antMatchers("/addcomputer",
+                                "/editcomputer",
+                                "/deletecomputers")
+        .hasAnyAuthority("moderator", "admin")
+
+        // Droits de l'administrateur
+        .antMatchers("/deleteCompany")
+        .hasAuthority("admin")
+
+        .and()
+        .formLogin()
+
+        .and()
+        .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+
+        .and()
+        .httpBasic().authenticationEntryPoint(entryPoint);
+    }
 
 	@Override
 	@Bean
-	public UserDetailsService userDetailsServiceBean() throws Exception {
+	public UserDetailsService userDetailsServiceBean() {
 		LOGGER.info("bean detail service");
 		return userService;
 	}

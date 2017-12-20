@@ -1,7 +1,5 @@
 package org.core.dto;
 
-import javax.validation.constraints.NotBlank;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
@@ -9,18 +7,17 @@ import org.springframework.stereotype.Component;
 public class ComputerDTO {
 
 	private int id;
-	@NotBlank(message = "Name can't be empty")
 	private String name;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private String dateIntroduced;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private String dateDiscontinued;
-	private int companyId;
+	private Long companyId;
 	private String companyName;
 	
 	public ComputerDTO(){}
 	
-	public ComputerDTO(int id, String name, String dateIntroduced, String dateDiscontinued, int companyId,
+	public ComputerDTO(int id, String name, String dateIntroduced, String dateDiscontinued, Long companyId,
 			String companyName) {
 		super();
 		this.id = id;
@@ -55,10 +52,10 @@ public class ComputerDTO {
 	public void setDateDiscontinued(String dateDiscontinued) {
 		this.dateDiscontinued = dateDiscontinued;
 	}
-	public int getCompanyId() {
+	public Long getCompanyId() {
 		return companyId;
 	}
-	public void setCompanyId(int companyId) {
+	public void setCompanyId(Long companyId) {
 		this.companyId = companyId;
 	}
 	public String getCompanyName() {

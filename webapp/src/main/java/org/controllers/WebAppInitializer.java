@@ -6,11 +6,11 @@ import javax.servlet.ServletRegistration;
 import org.persistence.PersistenceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @Configuration
 @Import(PersistenceConfiguration.class)
-@ComponentScan({"org.controllers", "org.core", "org.service", "org.persistence"})
 public class WebAppInitializer implements WebApplicationInitializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppInitializer.class);
@@ -37,8 +36,12 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		dispatcher.addMapping("/addcomputer");
 		dispatcher.addMapping("/editcomputer");
 		dispatcher.addMapping("/deletecomputers");
+		dispatcher.addMapping("/deleteCompany");
+		dispatcher.addMapping("/404");
+
 
 	}
+	
 
 
 }

@@ -24,10 +24,10 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<div class="label label-default pull-right">
 						id:
-						<c:out value="${id}" />
+						<c:out value="${computerDTO.id}" />
 
 					</div>
-					<h1>Edit Computer</h1>
+					<h1><spring:message code="label.edit" /></h1>
 					<h2>
 						<c:out value="${messageEdit}" />
 					</h2>
@@ -35,50 +35,46 @@
 					<form:form action="editcomputer" method="POST"
 						modelAttribute="computerDTO">
 						<input type="hidden" value="0" id="id" />
-						<!-- TODO: Change this value with the computer id -->
 						<fieldset>
 
-							<!-- <input type="hidden" name="computerId" value="${id}">-->
 							<form:input type="hidden" class="form-control" path="id"
 								value="${id}" />
 							<div class="form-group">
-								<label for="computerName">Computer name</label>
-								<!--  <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${name}">-->
-								<form:input class="form-control" path="name" value="${name}"
+								<label for="computerName"><spring:message code="label.computerName" /></label>
+								<form:input class="form-control" path="name" 
 									placeholder="Computer name" />
-								<form:errors path="name" />
-								<c:out value="${messageErrorName}" />
+								<form:errors class="errorForm" path="name" />
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label>
+								<label for="introduced"><spring:message code="label.dateIntroduced" /></label>
 								<form:input class="form-control" path="dateIntroduced"
-									placeholder="yyyy-MM-dd" value="${introduced}" />
-								<form:errors path="dateIntroduced" />
-								<c:out value="${messageErrorIntroduced}" />
+									placeholder="yyyy-MM-dd" />
+								<form:errors class="errorForm" path="dateIntroduced" />
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label>
+								<label for="discontinued"><spring:message code="label.dateDiscontinued" /></label>
 								<form:input class="form-control" path="dateDiscontinued"
-									placeholder="yyyy-MM-dd" value="${discontinued}" />
-								<form:errors path="dateDiscontinued" />
-								<c:out value="${messageErrorDiscontinued}" />
+									placeholder="yyyy-MM-dd"  />
+								<form:errors class="errorForm" path="dateDiscontinued" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId" name="companyId">
-									<option value="0">--</option>
-									<c:forEach items="${listeCompanies}" var="company">
-										<option value=${company['id']}
-											${company.id == companyId ? 'selected="selected"' : ''}>${company['name']}</option>
-									</c:forEach>
-								</select>
-								<c:out value="${messageErrorCompany}" />
+								<label for="companyId"><spring:message code="label.company" /></label>
+								<spring:message code="label.selectCompany" var="selectCompanyText"/>
+								<form:select path="companyId" class="form-control">
+									<form:option value="0" label="${selectCompanyText}" />
+									<form:options items="${mapCompanies}" />
+								</form:select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+						<spring:message code="label.editButton"
+									var="edit" />
+							<input type="submit" value="${edit}" class="btn btn-primary">
+							<spring:message code="label.or" /> <a href="dashboard" class="btn btn-default"><spring:message code="label.cancel" /></a>
 						</div>
+						<input type="hidden"
+							   name="${_csrf.parameterName}"
+							   value="${_csrf.token}"/>
 					</form:form>
 				</div>
 			</div>
